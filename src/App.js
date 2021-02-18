@@ -40,8 +40,18 @@ const BoardColumns = styled.div`
   color: ${(props) => (props.figureColor === "white" ? "#2f3542" : "black")};
 `;
 
-const FigureWrapper = styled.div`
+const Figure = styled.div`
   font-size: 35px;
+`;
+
+const FigurePathHint = styled.div`
+  border: ${(props) => (props.cellInPath ? "2px solid red" : "none")};
+  border-radius: 10px;
+  width: 85%;
+  height: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default function App() {
@@ -63,8 +73,8 @@ export default function App() {
 }
 
 function Board({ state }) {
-  const { figuresBoard, handleClick } = state;
-
+  const { figuresBoard, handleClick, path } = state;
+  console.log("path in app ", path);
   const drawBoard = (figuresBoard) => {
     const board = new Array(8).fill(new Array(8).fill());
     return board.map((row, row_index) => {
@@ -76,7 +86,7 @@ function Board({ state }) {
             let figure_color = figuresBoard[cell_number]?.player;
             let figure = figuresBoard[cell_number]?.type;
             let figureSign = figureDraw[figure] ? figureDraw[figure] : "";
-
+            let cellInPath = path[cell_number];
             return (
               <BoardColumns
                 key={col_index}
@@ -84,7 +94,9 @@ function Board({ state }) {
                 figureColor={figure_color}
                 onClick={() => handleClick(cell_number)}
               >
-                <FigureWrapper>{figureSign}</FigureWrapper>
+                <FigurePathHint cellInPath={cellInPath}>
+                  <Figure>{figureSign}</Figure>
+                </FigurePathHint>
               </BoardColumns>
             );
           })}
@@ -92,6 +104,5 @@ function Board({ state }) {
       );
     });
   };
-
   return <BoardWrapper>{drawBoard(figuresBoard)}</BoardWrapper>;
 }
