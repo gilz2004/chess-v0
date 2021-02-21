@@ -37,7 +37,7 @@ const BoardColumns = styled.div`
   min-height: 55px;
   font-weight: 600;
   background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
-  color: ${(props) => (props.figureColor === "white" ? "#2f3542" : "black")};
+  color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
 `;
 
 const Figure = styled.div`
@@ -74,7 +74,7 @@ export default function App() {
 
 function Board({ state }) {
   const { figuresBoard, handleClick, path } = state;
-  console.log("path in app ", path);
+  // console.log("path in app ", path);
   const drawBoard = (figuresBoard) => {
     const board = new Array(8).fill(new Array(8).fill());
     return board.map((row, row_index) => {
@@ -86,7 +86,7 @@ function Board({ state }) {
             let figure_color = figuresBoard[cell_number]?.player;
             let figure = figuresBoard[cell_number]?.type;
             let figureSign = figureDraw[figure] ? figureDraw[figure] : "";
-            let cellInPath = path[cell_number];
+            let cellInPath = path ? path[cell_number] : "";
             return (
               <BoardColumns
                 key={col_index}
