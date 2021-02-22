@@ -7,14 +7,32 @@ const initialState = {
   figuresBoard: piecesObject,
   path: {},
   pickedCell: "",
+  check: null,
 };
 
 export default function useGame() {
   const [state, setState] = useState(initialState);
-  const { figuresBoard, player, pickedCell, path } = state;
+  const { figuresBoard, player, pickedCell, path, check } = state;
+
+  function isCheck(board, cellNumber) {
+    //player is the global player its ok in here.
+    let figurePath = buildFigurePath(board, cellNumber, player);
+    console.log("figurePath", figurePath);
+    let kingInTheWay = Object.values(figurePath).find(
+      (pathCell) => pathCell.type === "king" && pathCell.player !== player
+    );
+    if (kingInTheWay) return { status: true, kingCell: kingInTheWay.cell };
+    return { status: false };
+  }
 
   function canFigureMove(cellNumber) {
     let opponentPlayer = player === "white" ? "black" : "white";
+    //  if check
+    if (check) {
+      console.log("aloha check");
+    }
+
+    //if not check :
     //get opponent figures
     let updatedFiguresBoard = { ...figuresBoard };
     delete updatedFiguresBoard[cellNumber];
@@ -40,21 +58,13 @@ export default function useGame() {
       };
       return acc;
     }, {});
-    console.log("oppPath", oppPath);
-
-    // delete oppPath[cellNumber];
-    // console.log("after delete oppPath", oppPath);
-    //check if opponent figures can get to the king
-    //search for the curr player king -> make a function
 
     let kingInOpponentsPath = Object.values(oppPath).find((pathCell) => {
       return pathCell.type === "king" && pathCell.player !== opponentPlayer;
     });
-    console.log("kingInPath", kingInOpponentsPath);
 
     if (kingInOpponentsPath) return false;
     return true;
-    //test mode - status when i test if the opponent figure can get to the curr player king
   }
 
   const handleClick = (cellNumber) => {
@@ -72,13 +82,28 @@ export default function useGame() {
     else {
       if (!isCellInPath(cellNumber)) return;
       const newFigureBoard = move(cellNumber);
-      setState({
-        ...state,
-        figuresBoard: newFigureBoard,
-        pickedCell: "",
-        player: swapPlayer(),
-        path: {},
-      });
+      let { status, kingCell } = isCheck(newFigureBoard, cellNumber);
+      // if (isCheck(newFigureBoard, cellNumber)) {
+      if (status) {
+        console.log("check on the king");
+        setState({
+          ...state,
+          figuresBoard: newFigureBoard,
+          pickedCell: "",
+          player: swapPlayer(),
+          path: {},
+          check: kingCell,
+        });
+      } else {
+        setState({
+          ...state,
+          figuresBoard: newFigureBoard,
+          pickedCell: "",
+          player: swapPlayer(),
+          path: {},
+          check: null,
+        });
+      }
       // let pr2 = performance.now();
     }
   };

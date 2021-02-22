@@ -41,7 +41,8 @@ const BoardColumns = styled.div`
 `;
 
 const Figure = styled.div`
-  font-size: 35px;
+  font-size: ${(props) => (props.checkCell ? "40px" : "35px")};
+  font-weight: ${(props) => (props.checkCell ? "900" : "400")};
 `;
 
 const FigurePathHint = styled.div`
@@ -73,7 +74,7 @@ export default function App() {
 }
 
 function Board({ state }) {
-  const { figuresBoard, handleClick, path } = state;
+  const { figuresBoard, handleClick, path, check } = state;
   // console.log("path in app ", path);
   const drawBoard = (figuresBoard) => {
     const board = new Array(8).fill(new Array(8).fill());
@@ -87,6 +88,7 @@ function Board({ state }) {
             let figure = figuresBoard[cell_number]?.type;
             let figureSign = figureDraw[figure] ? figureDraw[figure] : "";
             let cellInPath = path ? path[cell_number] : "";
+            let checkCell = check === cell_number;
             return (
               <BoardColumns
                 key={col_index}
@@ -95,7 +97,7 @@ function Board({ state }) {
                 onClick={() => handleClick(cell_number)}
               >
                 <FigurePathHint cellInPath={cellInPath}>
-                  <Figure>{figureSign}</Figure>
+                  <Figure checkCell={checkCell}>{figureSign}</Figure>
                 </FigurePathHint>
               </BoardColumns>
             );
