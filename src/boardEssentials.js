@@ -7,6 +7,7 @@ export const piecesObject = {
   "05": { type: "bishop", player: "black" },
   "06": { type: "knight", player: "black" },
   "07": { type: "rook", player: "black" },
+  // 22: { type: "king", player: "white" },
   10: { type: "pawn", player: "black" },
   11: { type: "pawn", player: "black" },
   12: { type: "pawn", player: "black" },

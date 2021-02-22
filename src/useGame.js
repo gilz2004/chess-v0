@@ -1,30 +1,77 @@
 import { useState } from "react";
 import { piecesObject } from "./boardEssentials";
 
+let testMode = false;
+
 const initialState = {
   player: "white",
   takenFigures: [],
   figuresBoard: piecesObject,
   path: {},
-
+  // testMode:false,
   pickedCell: "",
 };
 
 export default function useGame() {
   const [state, setState] = useState(initialState);
-  const { figuresBoard, player, pickedCell } = state;
+  const { figuresBoard, player, pickedCell, path } = state;
+
+  function canFigureMove(cellNumber) {
+    //set test mode on.
+    testMode = true;
+    //get opponent figures
+    let updatedFiguresBoard = { ...figuresBoard };
+    delete updatedFiguresBoard[cellNumber];
+
+    const opponentCells = Object.keys(updatedFiguresBoard).reduce(
+      (acc, cell) => {
+        if (updatedFiguresBoard[cell].player !== player) {
+          acc[cell] = { ...updatedFiguresBoard[cell], cell };
+        }
+        return acc;
+      },
+      {}
+    );
+    console.log("updatedFiguresBoard", updatedFiguresBoard);
+
+    const oppPath = Object.values(opponentCells).reduce((acc, opponentCell) => {
+      acc = { ...acc, ...buildFigurePath(opponentCell.cell) };
+      return acc;
+    }, {});
+    delete oppPath[cellNumber];
+    console.log("oppPath", oppPath);
+    // delete oppPath[cellNumber];
+    // console.log("after delete oppPath", oppPath);
+    //check if opponent figures can get to the king
+    //search for the curr player king -> make a function
+
+    // let kingInOpponentsPath = Object.values(oppPath).find((pathCell) => {
+    // console.log("pathCell", pathCell);
+    // return pathCell.type === "king" && pathCell.player === player;
+    // });
+    // console.log("kingInPath", kingInOpponentsPath);
+
+    //set test mode = false
+    testMode = false;
+    // if (kingInOpponentsPath) return false;
+    return true;
+    //test mode - status when i test if the opponent figure can get to the curr player king
+  }
 
   const handleClick = (cellNumber) => {
     //No cell picked yet
     if (!pickedCell) {
       if (player !== figuresBoard[cellNumber]?.player) return;
-      let path = buildFigurePath(cellNumber);
-      console.log("path", path);
-      setState({ ...state, pickedCell: cellNumber, path });
+      if (!canFigureMove(cellNumber)) return;
+      else {
+        let path = buildFigurePath(cellNumber);
+        setState({ ...state, pickedCell: cellNumber, path });
+      }
       //if the player want to change picked cell
     } else if (pickedCell && pickedCell === cellNumber)
       setState({ ...state, pickedCell: "", path: {} });
     else {
+      if (!isCellInPath(cellNumber)) return;
       const newFigureBoard = move(cellNumber);
       setState({
         ...state,
@@ -33,8 +80,11 @@ export default function useGame() {
         player: swapPlayer(),
         path: {},
       });
+      // let pr2 = performance.now();
     }
   };
+
+  const isCellInPath = (cell) => path[cell];
 
   function swapPlayer() {
     return player === "white" ? "black" : "white";
@@ -173,7 +223,6 @@ export default function useGame() {
       },
       []
     );
-    // console.log("knight ", knightPossiblePath);
     return checkPathValidation(knightPossiblePath, { removeScanning: true });
   };
 
@@ -280,17 +329,24 @@ export default function useGame() {
     let { removeScanning, pawnFigure } = specialCase;
     //array of object:
     let stopScanning = false;
-
     const figurePath = pathArray.reduce((acc, cell_in_path) => {
       const { player: figurePlayer, type, cell } = cell_in_path;
+      //change to check the opponent positioning path
+      let curr_player = testMode
+        ? player === "white"
+          ? "black"
+          : "white"
+        : player;
+
       if (!removeScanning && stopScanning) return acc;
       //same player can't overlap my player
-      else if (figurePlayer === player) {
+      else if (figurePlayer === curr_player) {
         stopScanning = true;
         return acc;
       }
       //Opponent figure, add to path and stop scanning
-      else if (figurePlayer && figurePlayer !== player && !pawnFigure) {
+      else if (figurePlayer && figurePlayer !== curr_player && !pawnFigure) {
+        console.log("smk");
         acc[cell] = { ...cell_in_path };
         stopScanning = true;
         return acc;
@@ -318,5 +374,5 @@ export default function useGame() {
   };
 }
 ///todo:
-//problems: 1 black  knight can overtake his figures.
+//problems: 1 black  knight can overtake his figures.= fixed
 //2 paint the current picked cell in color, so the user may know who he picked
