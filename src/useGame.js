@@ -12,16 +12,16 @@ const initialState = {
 
 export default function useGame() {
   const [state, setState] = useState(initialState);
+  const [pathToKing, setPathToKing] = useState([]);
   const { figuresBoard, player, pickedCell, path, check } = state;
+
+  // console.log("pathToKing", pathToKing);
 
   function isCheck(board, cellNumber) {
     //player is the global player its ok in here.
     let figurePath = buildFigurePath(board, cellNumber, player);
-    console.log("figurePath", figurePath);
-    let kingInTheWay = Object.values(figurePath).find(
-      (pathCell) => pathCell.type === "king" && pathCell.player !== player
-    );
-    if (kingInTheWay) return { status: true, kingCell: kingInTheWay.cell };
+    let opponentKing = searchOpponentKing(figurePath, player);
+    if (opponentKing) return { status: true, kingCell: opponentKing.cell };
     return { status: false };
   }
 
@@ -29,42 +29,57 @@ export default function useGame() {
     let opponentPlayer = player === "white" ? "black" : "white";
     //  if check
     if (check) {
-      console.log("aloha check");
+      //get curr player figures = done!
+      //get the path to each figure
+      //maybe can pass the path down to handleClick function, and not ask for another path
+      const currPlayerCells = Object.keys(figuresBoard).reduce((acc, cell) => {
+        if (figuresBoard[cell].player === player)
+          acc[cell] = { ...figuresBoard[cell], cell };
+        return acc;
+      }, {});
+      console.log("aloha check", currPlayerCells);
     }
 
     //if not check :
     //get opponent figures
-    let updatedFiguresBoard = { ...figuresBoard };
-    delete updatedFiguresBoard[cellNumber];
+    // let updatedFiguresBoard = { ...figuresBoard };
+    // delete updatedFiguresBoard[cellNumber];
 
-    const opponentCells = Object.keys(updatedFiguresBoard).reduce(
-      (acc, cell) => {
-        if (updatedFiguresBoard[cell].player !== player) {
-          acc[cell] = { ...updatedFiguresBoard[cell], cell };
-        }
-        return acc;
-      },
-      {}
-    );
+    // const opponentCells = Object.keys(updatedFiguresBoard).reduce(
+    //   (acc, cell) => {
+    //     if (updatedFiguresBoard[cell].player !== player) {
+    //       acc[cell] = { ...updatedFiguresBoard[cell], cell };
+    //     }
+    //     return acc;
+    //   },
+    //   {}
+    // );
 
-    const oppPath = Object.values(opponentCells).reduce((acc, opponentCell) => {
-      acc = {
-        ...acc,
-        ...buildFigurePath(
-          updatedFiguresBoard,
-          opponentCell.cell,
-          opponentPlayer
-        ),
-      };
-      return acc;
-    }, {});
+    // const oppPath = Object.values(opponentCells).reduce((acc, opponentCell) => {
+    //   acc = {
+    //     ...acc,
+    //     ...buildFigurePath(
+    //       updatedFiguresBoard,
+    //       opponentCell.cell,
+    //       opponentPlayer
+    //     ),
+    //   };
+    //   return acc;
+    // }, {});
 
-    let kingInOpponentsPath = Object.values(oppPath).find((pathCell) => {
-      return pathCell.type === "king" && pathCell.player !== opponentPlayer;
-    });
+    // let kingInOpponentsPath = Object.values(oppPath).find((pathCell) => {
+    //   return pathCell.type === "king" && pathCell.player !== opponentPlayer;
+    // });
 
-    if (kingInOpponentsPath) return false;
+    // if (kingInOpponentsPath) return false;
+    // return true;
     return true;
+  }
+
+  function searchOpponentKing(path, player) {
+    return Object.values(path).find((pathCell) => {
+      return pathCell.type === "king" && pathCell.player !== player;
+    });
   }
 
   const handleClick = (cellNumber) => {
@@ -358,12 +373,7 @@ export default function useGame() {
       let stopScanning = false;
       const figurePath = pathArray.reduce((acc, cell_in_path) => {
         const { player: figurePlayer, type, cell } = cell_in_path;
-        //change to check the opponent positioning path
-        // let curr_player = testMode
-        //   ? player === "white"
-        //     ? "black"
-        //     : "white"
-        //   : player;
+
         if (!removeScanning && stopScanning) return acc;
         //same player can't overlap my player
         else if (figurePlayer === player) {
@@ -404,3 +414,4 @@ export default function useGame() {
 ///todo:
 //problems: 1 black  knight can overtake his figures.= fixed
 //2 paint the current picked cell in color, so the user may know who he picked
+//3 check for code repetition
