@@ -387,6 +387,7 @@ export default function useGame() {
       let path = {};
       let index = 1;
       let maxLoops = 8;
+      let opponentKingAlert = false;
       while (maxLoops >= 0) {
         let { nextRow, nextCol } = operation(index);
         let cell = nextRow + "" + nextCol;
@@ -398,10 +399,18 @@ export default function useGame() {
         else if (!board[cell]) path[cell] = { ...board[cell], cell };
         else if (board[cell].player !== player) {
           path[cell] = { ...board[cell], cell };
+          if (board[cell].type === "king") opponentKingAlert = true;
           break;
         }
+
         maxLoops--;
         index++;
+      }
+      console.log("path", path);
+      if (opponentKingAlert) {
+        console.log("king in path", path);
+        setPathToKing(path);
+        opponentKingAlert = false;
       }
       return path;
     };
