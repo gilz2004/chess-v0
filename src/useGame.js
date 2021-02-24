@@ -26,22 +26,38 @@ export default function useGame() {
   }
 
   function canFigureMove(cellNumber) {
-    let opponentPlayer = player === "white" ? "black" : "white";
     //  if check
     if (check) {
       //get curr player figures = done!
       //get the path to each figure
       //maybe can pass the path down to handleClick function, and not ask for another path
-      const currPlayerCells = Object.keys(figuresBoard).reduce((acc, cell) => {
-        if (figuresBoard[cell].player === player)
-          acc[cell] = { ...figuresBoard[cell], cell };
-        return acc;
-      }, {});
-      console.log("aloha check", currPlayerCells);
+      let currPlayerFigures = getAllPlayerFigures(figuresBoard, player);
+      // const currPlayerCells = Object.keys(figuresBoard).reduce((acc, cell) => {
+      //   if (figuresBoard[cell].player === player)
+      //     acc[cell] = { ...figuresBoard[cell], cell };
+      //   return acc;
+      // }, {});
+      console.log("aloha check", currPlayerFigures);
     }
 
     //if not check :
+    let modifiedFiguresBoard = { ...figuresBoard };
+    // "remove" the current picked cell from the board,
+    //  to see if the king is exposed after the move.
+    delete modifiedFiguresBoard[cellNumber];
+    let opponentPlayer = player === "white" ? "black" : "white";
+    //build a path ( were each opponent figure can move to )
+    let opponentFigures = getAllPlayerFigures(
+      modifiedFiguresBoard,
+      opponentPlayer
+    );
+    console.log("opp cells", opponentFigures);
+    console.log("xyz", pathToKing);
+    ///check to see if any figure path have a king in her way
+    // let opponentKing = searchOpponentKing(opponentFigures, opponentPlayer);
+    // console.log("opponentKing", opponentKing);
     //get opponent figures
+
     // let updatedFiguresBoard = { ...figuresBoard };
     // delete updatedFiguresBoard[cellNumber];
 
@@ -76,8 +92,22 @@ export default function useGame() {
     return true;
   }
 
+  function getAllPlayerFigures(board, player) {
+    return Object.keys(board).reduce((acc, cell) => {
+      if (board[cell].player === player) {
+        let path = buildFigurePath(board, cell, player);
+        if (!Object.values(path).length) return acc;
+        else {
+          acc[cell] = { ...path };
+        }
+      }
+      return acc;
+    }, {});
+  }
+
   function searchOpponentKing(path, player) {
     return Object.values(path).find((pathCell) => {
+      console.log("pp", pathCell);
       return pathCell.type === "king" && pathCell.player !== player;
     });
   }
@@ -86,11 +116,11 @@ export default function useGame() {
     //No cell picked yet
     if (!pickedCell) {
       if (player !== figuresBoard[cellNumber]?.player) return;
-      if (!canFigureMove(cellNumber)) return;
-      else {
-        let path = buildFigurePath(figuresBoard, cellNumber, player);
-        setState({ ...state, pickedCell: cellNumber, path });
-      }
+      // if (!canFigureMove(cellNumber)) return;
+      // else {
+      let path = buildFigurePath(figuresBoard, cellNumber, player);
+      setState({ ...state, pickedCell: cellNumber, path });
+      // }
       //if the player want to change picked cell
     } else if (pickedCell && pickedCell === cellNumber)
       setState({ ...state, pickedCell: "", path: {} });
@@ -166,32 +196,41 @@ export default function useGame() {
         cell: newCellNumber,
       };
       //moves build path:
-      let possibleMoves = [];
-      //check if this move is pawn the pawn first move.
-      if (board[cellNumber] === piecesObject[cellNumber]) {
-        possibleMoves.push(cell);
-        newCellNumber = secondRowMove + "" + curr_col;
-        cell = { ...board[newCellNumber], cell: newCellNumber };
-        possibleMoves.push(cell);
+      let movePath = {};
+
+      //empty cell  = pawn can move
+      if (!board[newCellNumber]) {
+        //first ever pawn move:
+        movePath[newCellNumber] = cell;
+        if (board[cellNumber] === piecesObject[cellNumber]) {
+          //check if second cell is empty
+          newCellNumber = secondRowMove + "" + curr_col;
+          if (!board[newCellNumber]) {
+            movePath[newCellNumber] = {
+              ...board[newCellNumber],
+              cell: newCellNumber,
+            };
+          }
+        }
       }
-      //not first move;
-      else possibleMoves.push(cell);
-      let movesPath = checkPathValidation(possibleMoves, { pawnFigure: true });
       //pawn take over cells from here...
       let takeOverPossibleMoves = pawnTakeOverMoves(firstRowMove, curr_col);
-      return { ...movesPath, ...takeOverPossibleMoves };
+      return { ...movePath, ...takeOverPossibleMoves };
     };
 
     const pawnTakeOverMoves = (row, col) => {
       let takeOverPossibleCells = {
-        prevToCurrCell: row + "" + (col - 1),
-        nextToCurrCell: row + "" + (col + 1),
+        prevToCurrCell: { nextRow: row, nextCol: col - 1 },
+        nextToCurrCell: { nextRow: row, nextCol: col + 1 },
       };
       return Object.values(takeOverPossibleCells).reduce((acc, cellNumber) => {
-        if (isOpponentFound(cellNumber))
+        let { nextRow, nextCol } = cellNumber;
+        let cell = nextRow + "" + nextCol;
+        if (!cellOnBoardValid(nextRow, nextCol)) return acc;
+        else if (isOpponentFound(cell))
           acc = {
             ...acc,
-            [cellNumber]: { ...board[cellNumber], cell: cellNumber },
+            [cell]: { ...board[cell], cell },
           };
         return acc;
       }, {});
@@ -200,6 +239,7 @@ export default function useGame() {
     const isOpponentFound = (cell) => {
       if (!board[cell]) return false;
       if (board[cell].player !== player) return true;
+      return false;
     };
 
     const kingPathBuild = () => {
@@ -235,9 +275,6 @@ export default function useGame() {
     };
 
     const knightPathBuild = () => {
-      // let currentRow = parseInt(cellNumber / 10);
-
-      // let currentCol = parseInt(cellNumber) % 10;
       let movements = {
         upLeftV1: { nextRow: curr_row - 2, nextCol: curr_col - 1 },
         upLeftV2: { nextRow: curr_row - 1, nextCol: curr_col - 2 },
@@ -249,27 +286,24 @@ export default function useGame() {
         downRightV2: { nextRow: curr_row + 1, nextCol: curr_col + 2 },
       };
 
-      let knightPossiblePath = Object.values(movements).reduce(
-        (acc, movement) => {
-          let { nextRow, nextCol } = movement;
-          if (cellOnBoardValid(nextRow, nextCol)) {
-            let newCellNumber = nextRow + "" + nextCol;
+      return Object.values(movements).reduce((acc, movement) => {
+        let { nextRow, nextCol } = movement;
+        if (cellOnBoardValid(nextRow, nextCol)) {
+          let newCellNumber = nextRow + "" + nextCol;
+          // here just check if there is an opponent in dest cell or cell is empty
+          if (isOpponentFound(newCellNumber) || !board[newCellNumber]) {
             let cell = {
               ...board[newCellNumber],
               cell: nextRow + "" + nextCol,
             };
-            acc.push(cell);
+            acc[newCellNumber] = { ...cell };
           }
-          return acc;
-        },
-        []
-      );
-      return checkPathValidation(knightPossiblePath, { removeScanning: true });
+        }
+        return acc;
+      }, {});
     };
 
     const rookPathBuild = () => {
-      // let curr_row = parseInt(cellNumber / 10);
-      // let curr_col = parseInt(cellNumber) % 10;
       //This will run automatically
       let movements = {
         goUp: () =>
@@ -305,8 +339,6 @@ export default function useGame() {
     };
 
     const bishopPathBuild = () => {
-      // let curr_row = parseInt(cellNumber / 10);
-      // let curr_col = parseInt(cellNumber) % 10;
       let movements = {
         goUpLeft: () =>
           tryBuildPath({
@@ -352,53 +384,33 @@ export default function useGame() {
     }
 
     const tryBuildPath = ({ operation }) => {
-      let path = new Array(8);
+      let path = {};
       let index = 1;
       let maxLoops = 8;
       while (maxLoops >= 0) {
         let { nextRow, nextCol } = operation(index);
-        if (!cellOnBoardValid(nextRow, nextCol)) break; // or better to add return;
         let cell = nextRow + "" + nextCol;
-        path.push({ ...board[cell], cell });
+        if (
+          !cellOnBoardValid(nextRow, nextCol) ||
+          board[cell]?.player === player
+        )
+          break;
+        else if (!board[cell]) path[cell] = { ...board[cell], cell };
+        else if (board[cell].player !== player) {
+          path[cell] = { ...board[cell], cell };
+          break;
+        }
         maxLoops--;
         index++;
       }
       return path;
     };
 
-    //removeScanning for knight, he has the ability to jump over other figures
-    const checkPathValidation = (pathArray, specialCase = {}) => {
-      let { removeScanning, pawnFigure } = specialCase;
-      //array of object:
-      let stopScanning = false;
-      const figurePath = pathArray.reduce((acc, cell_in_path) => {
-        const { player: figurePlayer, type, cell } = cell_in_path;
-
-        if (!removeScanning && stopScanning) return acc;
-        //same player can't overlap my player
-        else if (figurePlayer === player) {
-          stopScanning = true;
-          return acc;
-        }
-        //Opponent figure, add to path and stop scanning
-        else if (figurePlayer && figurePlayer !== player && !pawnFigure) {
-          acc[cell] = { ...cell_in_path };
-          stopScanning = true;
-          return acc;
-        } else {
-          //someone in the pawn move path,prevent the pawn to move forward.
-          if (pawnFigure && board[cell]) {
-            stopScanning = true;
-          } else acc[cell] = { ...cell_in_path };
-        }
-        return acc;
-      }, {});
-      return figurePath;
-    };
+    //maybe remove this function also
 
     const buildValidPath = (movements) => {
       return Object.values(movements).reduce((acc, movement) => {
-        acc = { ...acc, ...checkPathValidation(movement()) };
+        acc = { ...acc, ...movement() };
         return acc;
       }, {});
     };
