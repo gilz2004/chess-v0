@@ -21,10 +21,40 @@ export default function useGame() {
 
     let curr_figure_path = buildFigurePath(figuresBoard, cellNumber, player);
     let updatedPath = {};
-    let newPath;
+    let newPath = {};
+    let opponentPlayer = player === "white" ? "black" : "white";
+    let opponentsCells = Object.keys(figuresBoard).filter(
+      (figureBoardCell) =>
+        figuresBoard[figureBoardCell]?.player === opponentPlayer
+    );
+
+    //even if not check the king path has to be checked for threats
+    if (
+      figuresBoard[cellNumber].player === player &&
+      figuresBoard[cellNumber].type === "king"
+    ) {
+      let modCurrFigurePath = { ...curr_figure_path };
+      Object.values(curr_figure_path).forEach((kingPathCell) => {
+        let modBoard = move(kingPathCell.cell, cellNumber);
+        //get opponent and scan each opponents figure to see if he can get to the king path
+        opponentsCells.forEach((oppCellPath) => {
+          let cellFigurePath = buildFigurePath(
+            modBoard,
+            oppCellPath,
+            opponentPlayer
+          );
+          let kingInCell = searchOpponentKing(cellFigurePath);
+          if (kingInCell) {
+            let { cell: kingCellNumber } = kingInCell;
+            delete modCurrFigurePath[kingCellNumber];
+          }
+        });
+      });
+      return modCurrFigurePath;
+    }
+
     //  if check
     if (check) {
-      //get picked figure path to check if it can save the king
       updatedPath = Object.values(curr_figure_path).reduce(
         (acc, figurePathCell) => {
           if (kingsPath[figurePathCell.cell])
@@ -42,7 +72,7 @@ export default function useGame() {
       //"remove" the current figure from the cell.
       delete updated_curr_figure_path[cellNumber];
       //get all opponents figures
-      let opponentPlayer = player === "white" ? "black" : "white";
+
       let opponentPosThreatCell = getAllPlayerFigures(
         updated_curr_figure_path,
         opponentPlayer
@@ -61,6 +91,7 @@ export default function useGame() {
           (acc, currFigurePathCell) => {
             console.log("blah blah blah", currFigurePathCell);
             //add different player check here also?
+
             if (kingsPath[currFigurePathCell.cell]) {
               acc[currFigurePathCell.cell] = {
                 ...kingsPath[currFigurePathCell.cell],
@@ -75,8 +106,10 @@ export default function useGame() {
       //scan path and see if king found
       if (Object.values(newPath).length) {
         console.log("new ", newPath);
+        kingsPath = {};
         return newPath;
       }
+      // }
       return curr_figure_path;
     }
   }
@@ -142,6 +175,9 @@ export default function useGame() {
           path: {},
           check: null,
         });
+        //after a move reset king path , its ok because the path will be to save the king,
+        //if hes in danger
+        kingsPath = {};
       }
       // let pr2 = performance.now();
     }
@@ -153,10 +189,11 @@ export default function useGame() {
     return player === "white" ? "black" : "white";
   }
 
-  function move(move_to_cell) {
+  function move(move_to_cell, moveFromCell = null) {
+    let statePickedCell = moveFromCell ? moveFromCell : pickedCell;
     const newFigureBoard = { ...figuresBoard };
-    let pieceToMove = newFigureBoard[pickedCell];
-    delete newFigureBoard[pickedCell];
+    let pieceToMove = newFigureBoard[statePickedCell];
+    delete newFigureBoard[statePickedCell];
     return { ...newFigureBoard, [move_to_cell]: pieceToMove };
   }
 
@@ -428,3 +465,9 @@ export default function useGame() {
 //problems: 1 black  knight can overtake his figures.= fixed
 //2 paint the current picked cell in color, so the user may know who he picked
 //3 check for code repetition
+
+//4 canFigureMove function newPath part to check it well
+//5 how to build a check mate situation
+//6 pawn to queen transform
+//7 paint current picked figure cell
+//8 add taken figures to taken figures array
