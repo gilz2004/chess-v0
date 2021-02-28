@@ -57,6 +57,7 @@ const FigurePathHint = styled.div`
 
 export default function App() {
   const state = useGame();
+  const { gameStatus, takenFigures } = state;
 
   return (
     <>
@@ -65,17 +66,42 @@ export default function App() {
         <div>
           <h3>Game details here</h3>
           <p>{state.player} player turn</p>
+          {gameStatus ? (
+            <div style={{ border: "3px solid red" }}>
+              Game over winner is:{state.player === "white" ? "black" : "white"}
+            </div>
+          ) : null}
         </div>
         <Board state={state} />
-        <div>Taken figures here</div>
+        <ul>
+          {takenFigures.map((figure, index) => {
+            console.log("fig", figure);
+            return (
+              <li
+                key={index}
+                style={{ color: figure.player === "black" ? "black" : "red" }}
+              >
+                {figureDraw[figure.type]}
+              </li>
+            );
+          })}
+        </ul>
       </GameWrapper>
     </>
   );
 }
 
 function Board({ state }) {
-  const { figuresBoard, handleClick, path, check } = state;
+  const {
+    figuresBoard,
+    handleClick,
+    path,
+    check,
+    // takenFigures,
+    // gameStatus,
+  } = state;
   // console.log("path in app ", path);
+  // console.log("gameStatus", gameStatus);
   const drawBoard = (figuresBoard) => {
     const board = new Array(8).fill(new Array(8).fill());
     return board.map((row, row_index) => {

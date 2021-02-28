@@ -23,7 +23,7 @@ export const piecesObject = {
   // 63: { type: "pawn", player: "white" },
   35: { type: "queen", player: "black" },
   65: { type: "pawn", player: "white" },
-  // 65: { type: "pawn", player: "white" },
+  27: { type: "pawn", player: "white" },
   // 66: { type: "pawn", player: "white" },
   // 67: { type: "pawn", player: "white" },
   70: { type: "rook", player: "white" },
