@@ -14,18 +14,22 @@ let pathToKing = {};
 
 export default function useGame() {
   const [state, setState] = useState(initialState);
-  const { figuresBoard, player, pickedCell, path, check } = state;
-
-  function handleKingMove(
+  // const [kingThreatCells, setKingThreatCells] = useState(null);
+  const {
+    figuresBoard,
     player,
-    curr_figure_path,
-    opponentsCells,
-    cellNumber
-  ) {
-    let opponentPlayer = player === "white" ? "black" : "white";
+    pickedCell,
+    path,
+    check,
+    kingThreatCells,
+    takenFigures,
+  } = state;
+
+  function handleKingMove(opponentPlayer, curr_figure_path, cellNumber) {
     let modCurrFigurePath = { ...curr_figure_path };
-    Object.values(curr_figure_path).forEach((kingPathCell) => {
-      let modBoard = move(kingPathCell.cell, cellNumber);
+    let opponentsCells = getOpponentsCells(opponentPlayer);
+    Object.values(curr_figure_path).forEach((figurePathCell) => {
+      let modBoard = move(figurePathCell.cell, cellNumber);
       //get opponent and scan each opponents figure to see if he can get to the king path
       opponentsCells.forEach((oppCellPath) => {
         let cellFigurePath = buildFigurePath(
@@ -33,10 +37,7 @@ export default function useGame() {
           oppCellPath,
           opponentPlayer
         );
-        //reset kings path because it will trigger an new path set each time, and in this condition
-        // i don't need the king path;
-        //problem with this reset of the kings path
-        // kingsPath = {};
+
         let kingInCell = searchOpponentKing(cellFigurePath);
         if (kingInCell) {
           let { cell: kingCellNumber } = kingInCell;
@@ -47,119 +48,82 @@ export default function useGame() {
     return modCurrFigurePath;
   }
 
-  // function canFigureMove(figuresBoard, cellNumber, player) {
-  //   //This function will return the path, remove the path build from handleClick when a !pickedCell
+  function getOpponentsCells(opponentPlayer) {
+    return Object.keys(figuresBoard).filter(
+      (figureBoardCell) =>
+        figuresBoard[figureBoardCell]?.player === opponentPlayer
+    );
+  }
 
-  //   let curr_figure_path = buildFigurePath(figuresBoard, cellNumber, player);
-  //   let check_mate_flag = false;
-  //   let updatedPath = {};
-  //   let newPath = {};
-  //   let opponentPlayer = player === "white" ? "black" : "white";
-  //   let opponentsCells = Object.keys(figuresBoard).filter(
-  //     (figureBoardCell) =>
-  //       figuresBoard[figureBoardCell]?.player === opponentPlayer
-  //   );
-  //   //even if not check the king path has to be checked for threats
-  //   // if (
-  //   //   figuresBoard[cellNumber].player === player &&
-  //   //   figuresBoard[cellNumber].type === "king"
-  //   // ) {
-  //   //   //if will work change function name, to handle correct king path or safe king path maybe put this in king path build function
-  //   //   let modCurrFigurePath = handleKingMove(
-  //   //     player,
-  //   //     curr_figure_path,
-  //   //     opponentsCells,
-  //   //     cellNumber
-  //   //   );
+  function canFigureMove(figuresBoard, cellNumber, player) {
+    //This function will return the path, remove the path build from handleClick when a !pickedCell
 
-  //   //   //king cannot move anywhere
-  //   //   if (!Object.keys(modCurrFigurePath).length) console.log("cant move king");
-  //   //   return modCurrFigurePath;
-  //   // }
-  //   //  if check
-  //   //to solve the check mate problem i can search a path to all of curr playerfigures and if check
-  //   if (check) {
-  //     console.log("pathToKing in check", pathToKing);
-  //     console.log("curr_figure_path in check", curr_figure_path);
-  //     updatedPath = Object.values(curr_figure_path).reduce(
-  //       (acc, figurePathCell) => {
-  //         // if (
-  //         //   figuresBoard[cellNumber].player === player &&
-  //         //   figuresBoard[cellNumber].type === "king"
-  //         // ) {
-  //         //   if (!pathToKing[figurePathCell])
-  //         //     acc[figurePathCell.cell] = { ...figurePathCell };
-  //         // }
-  //         if (pathToKing[figurePathCell.cell])
-  //           acc[figurePathCell.cell] = { ...figurePathCell };
-  //         return acc;
-  //       },
-  //       {}
-  //     );
-  //     // if(check_mate_flag && !Object.keys(updatedPath).length)console.log("game over check mate")
-  //     console.log("updatedPath", updatedPath);
-  //     return updatedPath;
-  //   }
+    let curr_figure_path = buildFigurePath(figuresBoard, cellNumber, player);
+    let check_mate_flag = false;
+    let updatedPath = {};
+    let newPath = {};
+    let opponentPlayer = player === "white" ? "black" : "white";
+    //check the kings path for threats.
+    if (
+      figuresBoard[cellNumber].player === player &&
+      figuresBoard[cellNumber].type === "king"
+    ) {
+      let modCurrFigurePath = handleKingMove(
+        opponentPlayer,
+        curr_figure_path,
+        cellNumber
+      );
 
-  //   //check to see if the figure can move and not expose the king
-  //   else {
-  //     console.log("kings pathcxvbvxcv", pathToKing);
-  //     let updated_curr_figure_path = { ...figuresBoard };
-  //     //"remove" the current figure from the cell.
-  //     delete updated_curr_figure_path[cellNumber];
-  //     //get all opponents figures
+      //king cannot move anywhere
+      if (!Object.keys(modCurrFigurePath).length) console.log("cant move king");
+      return modCurrFigurePath;
+    } else if (check) {
+      return Object.values(curr_figure_path).reduce((acc, figurePath) => {
+        if (pathToKing[figurePath.cell]) {
+          acc[figurePath.cell] = { ...figurePath };
+        }
+        return acc;
+      }, {});
+    }
+    //else no check but check the path of figure so the king will stay safe after figure movement
+    else {
+      let boardCopy = { ...figuresBoard };
+      delete boardCopy[cellNumber];
+      let opponentCells = getOpponentsCells(opponentPlayer);
+      let kingThreatCell;
+      let updatedPath;
+      opponentCells.forEach((oppCellPath) => {
+        let cellFigurePath = buildFigurePath(
+          boardCopy,
+          oppCellPath,
+          opponentPlayer
+        );
 
-  //     let opponentPosThreatCell = getAllPlayerFigures(
-  //       updated_curr_figure_path,
-  //       opponentPlayer
-  //     );
-  //     if (Object.values(pathToKing).length) {
-  //       // console.log("kingsPath", kingsPath);
-  //       // console.log("opponentPosThreatCell", opponentPosThreatCell);
-  //       //1 get the cell that threat the king = done
-  //       //add the cell to kings path
-  //       pathToKing = {
-  //         ...pathToKing,
-  //         [opponentPosThreatCell]: { cell: opponentPosThreatCell },
-  //       };
-  //       //check if current picked figure can go to the 1 position and the player is not the same and over take him
-  //       newPath = Object.values(curr_figure_path).reduce(
-  //         (acc, currFigurePathCell) => {
-  //           // console.log("blah blah blah", currFigurePathCell);
-  //           //add different player check here also?
+        let kingInCell = searchOpponentKing(cellFigurePath);
+        if (kingInCell) {
+          kingThreatCell = oppCellPath;
+          if (!curr_figure_path[oppCellPath]) curr_figure_path = {};
+          else {
+            updatedPath = Object.values(curr_figure_path).reduce(
+              (acc, figurePathCell) => {
+                if (pathToKing[figurePathCell.cell])
+                  acc[figurePathCell.cell] = { ...figurePathCell };
+                return acc;
+              },
+              {}
+            );
+            updatedPath = {
+              ...updatedPath,
+              [kingThreatCell]: { cell: kingThreatCell },
+            };
+          }
+        }
+      });
 
-  //           if (pathToKing[currFigurePathCell.cell]) {
-  //             acc[currFigurePathCell.cell] = {
-  //               ...pathToKing[currFigurePathCell.cell],
-  //             };
-  //           }
-  //           return acc;
-  //         },
-  //         {}
-  //       );
-  //       //if not then return empty object as path {} else return the path of the figure to the threat
-  //     }
-  //     //scan path and see if king found
-  //     if (Object.values(newPath).length) {
-  //       // console.log("new ", newPath);
-  //       pathToKing = {};
-  //       return newPath;
-  //     }
-  //     // }
-  //     return curr_figure_path;
-  //   }
-  // }
-
-  //This function will get the curr player figure and his figures paths
-  //each key is a figure curr cell and is values has to be the king savers
-  function getAllPlayerFigures(board, player) {
-    return Object.keys(board).find((cell) => {
-      if (board[cell]?.player === player) {
-        buildFigurePath(board, cell, player);
-        if (Object.values(pathToKing).length) return cell;
-      }
-      return undefined;
-    });
+      if (updatedPath) return updatedPath;
+    }
+    return curr_figure_path;
+    // return curr_figure_path;
   }
 
   const searchOpponentKing = (path) =>
@@ -184,6 +148,10 @@ export default function useGame() {
     else {
       if (!isCellInPath(cellNumber)) return;
       const newFigureBoard = move(cellNumber);
+      //set taken figures array to show to the players
+      let updatedTakenFigures = [...takenFigures];
+      if (figuresBoard[cellNumber])
+        updatedTakenFigures.push(figuresBoard[cellNumber]);
       //check the next path to see if the figure can threat the king.
       let nextFigurePath = buildFigurePath(newFigureBoard, cellNumber, player);
       let kingInDangerPos = searchOpponentKing(nextFigurePath);
@@ -201,6 +169,8 @@ export default function useGame() {
           player: swapPlayer(),
           path: {},
           check: kingInDangerPos.cell,
+          kingThreatCells: cellNumber,
+          takenFigures: updatedTakenFigures,
         });
       } else {
         setState({
@@ -210,6 +180,7 @@ export default function useGame() {
           player: swapPlayer(),
           path: {},
           check: null,
+          takenFigures: updatedTakenFigures,
         });
         //after a move reset king path , its ok because the path will be to save the king,
         //if hes in danger
@@ -334,7 +305,11 @@ export default function useGame() {
           (kingRow - 1 === queenRow || kingRow + 1 === queenRow)
         )
           acc[queenPathCell] = { cell: queenPathCell };
-
+        else if (
+          kingRow === queenRow &&
+          (kingCol + 1 === queenCol || kingCol - 1 === queenCol)
+        )
+          acc[queenPathCell] = { cell: queenPathCell };
         return acc;
       }, {});
     };
@@ -468,7 +443,10 @@ export default function useGame() {
         else if (!board[cell]) path[cell] = { ...board[cell], cell };
         else if (board[cell].player !== player) {
           path[cell] = { ...board[cell], cell };
-          if (board[cell].type === "king") {
+          if (
+            !Object.values(pathToKing).length &&
+            board[cell].type === "king"
+          ) {
             console.log("in try path", path);
             //path to opponents king
             pathToKing = path;
