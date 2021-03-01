@@ -127,7 +127,11 @@ export default function useGame() {
         cellNumber
       );
 
-      if (!Object.values(modCurrFigurePath).length && isGameOver()) {
+      if (
+        !Object.values(modCurrFigurePath).length &&
+        isGameOver() &&
+        Object.values(pathToKing).length
+      ) {
         setState({ ...state, gameStatus: true });
         return {};
       }
