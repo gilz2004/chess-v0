@@ -10,10 +10,8 @@ const AppBox = styled.div`
   }
 `;
 
-const Title = styled.h1`
-  text-align: center;
-  margin: 10px 0;
-  color: #64341b;
+const Title = styled.div`
+  font-size: 40px;
 `;
 
 const GameWrapper = styled.div`
@@ -86,6 +84,10 @@ const FigurePathHint = styled.div`
 `;
 
 const GameDetailsBox = styled.div`
+  border: 3px solid #64341b;
+  padding: 10px 0;
+  margin-left: 10px;
+  height: 40vh;
   text-align: center;
   color: #64341b;
   @media (max-width: 960px) {
@@ -117,6 +119,7 @@ const NewGameBtn = styled.button`
 `;
 
 const TakenFiguresBox = styled.div`
+  padding: 10px 0;
   @media (max-width: 960px) {
     grid-row: 3;
   }
@@ -135,13 +138,43 @@ const TakenFigure = styled.li`
   text-align: center;
 `;
 
+const Nav = styled.nav`
+  border-bottom: 2px solid black;
+  background: #64341b;
+  height: 50px;
+  margin-bottom: 10px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 35px;
+`;
+
+const NavLinksBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const NavLink = styled.span`
+  font-size: 12px;
+  cursor: pointer;
+`;
+
 export default function App() {
   const state = useGame();
   const { gameStatus, takenFigures, resetGame } = state;
 
   return (
     <AppBox>
-      <Title>Chess Game</Title>
+      <Nav>
+        <Title>Chess</Title>
+        <NavLinksBox>
+          <NavLink>Local mode</NavLink>
+          <NavLink>Online soon</NavLink>
+        </NavLinksBox>
+      </Nav>
       <GameWrapper>
         <GameDetailsBox>
           <h2>Game details</h2>
