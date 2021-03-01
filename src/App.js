@@ -29,6 +29,7 @@ const GameWrapper = styled.div`
 
 const BoardWrapper = styled.div`
   border: 20px solid #64341b;
+  border-radius: 8px;
   height: 100%;
   display: grid;
   -webkit-box-shadow: -1px -1px 15px -1px rgba(0, 0, 0, 0.51);
