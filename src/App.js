@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaChessQueen } from "react-icons/fa";
 import styled from "styled-components";
 import "./app.styles.css";
@@ -83,7 +83,8 @@ const Figure = styled.div`
 `;
 
 const FigurePathHint = styled.div`
-  border: ${(props) => (props.cellInPath ? "2px solid white" : "none")};
+  border: ${(props) =>
+    props.cellInPath && props.hints ? "2px solid white" : "none"};
   border-radius: 10px;
   width: 85%;
   height: 85%;
@@ -93,6 +94,7 @@ const FigurePathHint = styled.div`
 `;
 
 const GameDetailsBox = styled.div`
+  position: relative;
   box-shadow: 2px 4px 15px 5px rgba(0, 0, 0, 0.5);
   // border: 3px solid #64341b;
   border-radius: 10px;
@@ -164,6 +166,7 @@ const PlayerTurnSymbol = styled(FaChessQueen)`
 `;
 
 export default function App() {
+  const [hints, setHints] = useState(false);
   const state = useGame();
   const { gameStatus, takenFigures, resetGame } = state;
   //todo: when socket will be used change underline to active link.
@@ -186,8 +189,25 @@ export default function App() {
               <NewGameBtn onClick={resetGame}>New Game</NewGameBtn>
             </GameStatus>
           ) : null}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "0",
+              marginBottom: "5px",
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            Show path hints?{" "}
+            <input
+              type="checkbox"
+              // checked
+              value={hints}
+              onChange={(e) => setHints(e.target.checked)}
+            />
+          </div>
         </GameDetailsBox>
-        <Board state={state} />
+        <Board state={state} hints={hints} />
         <TakenFiguresBox>
           <h2
             style={{
@@ -218,7 +238,7 @@ export default function App() {
   );
 }
 
-function Board({ state }) {
+function Board({ state, hints }) {
   const { figuresBoard, handleClick, path, check, pickedCell } = state;
 
   const drawBoard = (figuresBoard) => {
@@ -243,7 +263,7 @@ function Board({ state }) {
                 // figureColor={figure_color}
                 onClick={() => handleClick(cell_number)}
               >
-                <FigurePathHint cellInPath={cellInPath}>
+                <FigurePathHint cellInPath={cellInPath} hints={hints}>
                   <Figure
                     enableBorderShadow={enableBorderShadow}
                     figureColor={figure_color}
