@@ -156,11 +156,6 @@ export default function App() {
         <TakenFiguresBox>
           <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
             Taken figures{" "}
-            {takenFigures.length ? (
-              <span>0</span>
-            ) : (
-              <span>{takenFigures.length} </span>
-            )}
           </h2>
           <TakenFigures>
             {takenFigures.map((figure, index) => {
