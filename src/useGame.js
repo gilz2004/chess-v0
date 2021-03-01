@@ -178,15 +178,11 @@ export default function useGame() {
     //No cell picked yet
     if (!pickedCell) {
       if (player !== figuresBoard[cellNumber]?.player) return;
-      // if (!canFigureMove(cellNumber)) return;
-      // else {
       let path = canFigureMove(figuresBoard, cellNumber, player);
-      // console.log("pp", path);
       if (Object.values(path).length) {
         setState({ ...state, pickedCell: cellNumber, path });
       }
       return; //
-      // }
       //if the player want to change picked cell
     } else if (pickedCell && pickedCell === cellNumber)
       setState({ ...state, pickedCell: "", path: {} });
@@ -535,4 +531,5 @@ export default function useGame() {
   };
 }
 ///todo:
-//3 check for code repetition
+//1check for code repetition
+//2 remove not used comments.
