@@ -1,25 +1,24 @@
 import React from "react";
-import { FaChess, FaChessQueen } from "react-icons/fa";
+import { FaChessQueen } from "react-icons/fa";
 import styled from "styled-components";
 import "./app.styles.css";
 import { figureDraw } from "./boardEssentials";
+import Header from "./Header";
 import useGame from "./useGame";
 
 const AppBox = styled.div`
+  height: 100vh;
+  background-image: url("/assets/wood-background.png");
   @media (max-width: 500px) {
     padding: 10px 10px;
   }
-`;
-
-const Title = styled.div`
-  font-size: 40px;
 `;
 
 const GameWrapper = styled.div`
   display: grid;
   height: 90vh;
   @media (max-width: 960px) {
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 150px 1fr;
     grid-gap: 10px;
   }
   @media (min-width: 960px) {
@@ -29,12 +28,12 @@ const GameWrapper = styled.div`
 `;
 
 const BoardWrapper = styled.div`
-  border: 20px solid #64341b;
+  border: 5px solid #2b2723;
+  -webkit-box-shadow: 2px 4px 19px 5px #000000;
+  box-shadow: 2px 4px 19px 5px #000000;
   border-radius: 8px;
   height: 100%;
   display: grid;
-  -webkit-box-shadow: -1px -1px 15px -1px rgba(0, 0, 0, 0.51);
-  box-shadow: -1px -1px 15px -1px rgba(0, 0, 0, 0.51);
   @media (max-width: 960px) {
     grid-row: 1;
   }
@@ -56,20 +55,17 @@ const BoardColumns = styled.div`
   font-weight: 600;
   -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
-  background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
-  // color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
-  // padding: 6px;
+  // background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
+  background-image: ${(props) =>
+    props.background
+      ? "url(/assets/dark-cell.png)"
+      : "url(/assets/light-cell.png)"};
   @media (min-width: 500px) {
     min-width: 55px;
     min-height: 55px;
   }
 `;
 
-// box-shadow: ${(props) =>
-//   props.enableBorderShadow
-//     ? "-5px -4px 15px -1px rgba(0, 0, 0, 0.66)"
-//     : "none"};
-// padding: 3px;
 const Figure = styled.div`
   user-select: none;
   border-radius: 10px;
@@ -81,28 +77,35 @@ const Figure = styled.div`
   @media (max-width: 500px) {
     font-size: ${(props) => (props.checkCell ? "35px" : "25px")};
   }
+  &:hover {
+    transform: scale(1.2);
+  }
 `;
 
 const FigurePathHint = styled.div`
   border: ${(props) => (props.cellInPath ? "2px solid white" : "none")};
   border-radius: 10px;
   width: 85%;
-  height: 90%;
-
+  height: 85%;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 const GameDetailsBox = styled.div`
-  border: 3px solid #64341b;
-  padding: 10px 0;
+  box-shadow: 2px 4px 15px 5px rgba(0, 0, 0, 0.5);
+  // border: 3px solid #64341b;
+  border-radius: 10px;
+  padding: 15px 0;
   margin-left: 10px;
-  height: 40vh;
   text-align: center;
-  color: #64341b;
+  // color: #64341b;
+  color: white;
   @media (max-width: 960px) {
     grid-row: 2;
+  }
+  @media (min-width: 960px) {
+    height: 40vh;
   }
 `;
 
@@ -152,34 +155,6 @@ const TakenFigure = styled.li`
   text-align: center;
 `;
 
-const Nav = styled.nav`
-  border-bottom: 2px solid black;
-  background: #64341b;
-  height: 50px;
-  margin-bottom: 10px;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 35px;
-  @media (max-width: 960px) {
-    padding: 0 20px;
-  }
-`;
-
-const NavLinksBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const NavLink = styled.span`
-  font-size: 12px;
-  cursor: pointer;
-  text-decoration: ${(props) => (props.underline ? "underline" : "none")};
-`;
-
 const PlayerTurnSymbol = styled(FaChessQueen)`
   color: ${(props) => props.color};
   font-size: 30px;
@@ -194,16 +169,7 @@ export default function App() {
   //todo: when socket will be used change underline to active link.
   return (
     <AppBox>
-      <Nav>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Title>Chess</Title>
-          <FaChess style={{ marginLeft: "10px", fontSize: "30px" }} />
-        </div>
-        <NavLinksBox>
-          <NavLink underline={true}>Local mode</NavLink>
-          <NavLink>Online soon</NavLink>
-        </NavLinksBox>
-      </Nav>
+      <Header />
       <GameWrapper>
         <GameDetailsBox>
           <h2>Game details</h2>
@@ -227,7 +193,7 @@ export default function App() {
             style={{
               textAlign: "center",
               marginBottom: "20px",
-              color: "#64341b",
+              color: "white",
             }}
           >
             Taken figures{" "}
@@ -238,7 +204,7 @@ export default function App() {
                 <TakenFigure
                   key={index}
                   style={{
-                    color: figure.player === "black" ? "black" : "gray",
+                    color: figure.player === "black" ? "black" : "white",
                   }}
                 >
                   {figureDraw[figure.type]}

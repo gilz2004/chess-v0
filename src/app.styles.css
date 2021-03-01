@@ -13,11 +13,6 @@ p {
   padding: 0;
 }
 
-/* .container {
-  display: grid;
-  grid-template-columns: 200px 1fr 200px;
-
-} */
 body {
-  background: #f4e5c8;
+  font-family: "Akaya Telivigala", cursive;
 }
