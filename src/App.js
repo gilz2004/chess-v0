@@ -1,4 +1,5 @@
 import React from "react";
+import { FaChess } from "react-icons/fa";
 import styled from "styled-components";
 import "./app.styles.css";
 import { figureDraw } from "./boardEssentials";
@@ -183,7 +184,10 @@ export default function App() {
   return (
     <AppBox>
       <Nav>
-        <Title>Chess</Title>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Title>Chess</Title>
+          <FaChess style={{ marginLeft: "10px", fontSize: "30px" }} />
+        </div>
         <NavLinksBox>
           <NavLink underline={true}>Local mode</NavLink>
           <NavLink>Online soon</NavLink>
