@@ -57,7 +57,7 @@ const BoardColumns = styled.div`
   box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
   // color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
-
+  padding: 10px;
   @media (min-width: 500px) {
     min-width: 55px;
     min-height: 60px;
@@ -65,6 +65,11 @@ const BoardColumns = styled.div`
 `;
 
 const Figure = styled.div`
+  box-shadow: ${(props) =>
+    props.enableBorderShadow
+      ? "-5px -4px 15px -1px rgba(0, 0, 0, 0.66)"
+      : "none"};
+  padding: 5px;
   user-select: none;
   border-radius: 10px;
   color: ${(props) => (props.figureColor === "white" ? "white" : "#1E1E1E")};
@@ -243,6 +248,7 @@ function Board({ state }) {
             let cellInPath = path ? path[cell_number] : "";
             let checkCell = check === cell_number;
             let pickedBorder = cell_number === pickedCell;
+            let enableBorderShadow = figureSign ? true : false;
             return (
               <BoardColumns
                 key={col_index}
@@ -252,6 +258,7 @@ function Board({ state }) {
               >
                 <FigurePathHint cellInPath={cellInPath}>
                   <Figure
+                    enableBorderShadow={enableBorderShadow}
                     figureColor={figure_color}
                     checkCell={checkCell}
                     pickedBorder={pickedBorder}
