@@ -64,6 +64,7 @@ const BoardColumns = styled.div`
 `;
 
 const Figure = styled.div`
+  user-select: none;
   color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
   font-size: ${(props) => (props.checkCell ? "42px" : "38px")};
   font-weight: ${(props) => (props.checkCell ? "900" : "400")};
