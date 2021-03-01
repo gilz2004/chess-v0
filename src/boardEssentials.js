@@ -1,3 +1,6 @@
+import { FaChessKing, FaChessPawn, FaChessKnight } from "react-icons/fa";
+import { GiChessRook, GiChessBishop, GiChessQueen } from "react-icons/gi";
+
 export const piecesObject = {
   "00": { type: "rook", player: "black" },
   "01": { type: "knight", player: "black" },
@@ -33,11 +36,19 @@ export const piecesObject = {
   77: { type: "rook", player: "white" },
 };
 
+// export const figureDraw = {
+//   rook: "♖",
+//   knight: "♘",
+//   bishop: "♗",
+//   king: "♔",
+//   queen: "♕",
+//   pawn: "♙",
+// };
 export const figureDraw = {
-  rook: "♖",
-  knight: "♘",
-  bishop: "♗",
-  king: "♔",
-  queen: "♕",
-  pawn: "♙",
+  rook: <GiChessRook />,
+  knight: <FaChessKnight />,
+  bishop: <GiChessBishop />,
+  king: <FaChessKing />,
+  queen: <GiChessQueen />,
+  pawn: <FaChessPawn />,
 };

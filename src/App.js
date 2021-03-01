@@ -45,6 +45,7 @@ const BoardRows = styled.div`
 `;
 
 const BoardColumns = styled.div`
+  border-radius: 1px;
   cursor: pointer;
   border: 1px solid black;
   display: flex;
@@ -65,7 +66,8 @@ const BoardColumns = styled.div`
 
 const Figure = styled.div`
   user-select: none;
-  color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
+  border-radius: 10px;
+  color: ${(props) => (props.figureColor === "white" ? "white" : "#1E1E1E")};
   font-size: ${(props) => (props.checkCell ? "42px" : "38px")};
   font-weight: ${(props) => (props.checkCell ? "900" : "400")};
   border: ${(props) => (props.pickedBorder ? "1px solid white" : "none")};
@@ -255,6 +257,7 @@ function Board({ state }) {
                     pickedBorder={pickedBorder}
                   >
                     {figureSign}
+                    {/* {figureDraw[figure]} */}
                   </Figure>
                 </FigurePathHint>
               </BoardColumns>

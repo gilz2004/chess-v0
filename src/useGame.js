@@ -191,7 +191,10 @@ export default function useGame() {
       }
       return; //
       //if the player want to change picked cell
-    } else if (pickedCell && pickedCell === cellNumber)
+    } else if (
+      (pickedCell && pickedCell === cellNumber) ||
+      (pickedCell && figuresBoard[cellNumber]?.player === player) //when rakirovka will be writeln change this line
+    )
       setState({ ...state, pickedCell: "", path: {} });
     else {
       if (!isCellInPath(cellNumber)) return;
