@@ -56,7 +56,7 @@ const BoardColumns = styled.div`
   -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
-  color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
+  // color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
 
   @media (min-width: 500px) {
     min-width: 55px;
@@ -65,6 +65,7 @@ const BoardColumns = styled.div`
 `;
 
 const Figure = styled.div`
+  color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
   font-size: ${(props) => (props.checkCell ? "42px" : "38px")};
   font-weight: ${(props) => (props.checkCell ? "900" : "400")};
   border: ${(props) => (props.pickedBorder ? "1px solid white" : "none")};
@@ -205,11 +206,15 @@ function Board({ state }) {
               <BoardColumns
                 key={col_index}
                 background={cell_background}
-                figureColor={figure_color}
+                // figureColor={figure_color}
                 onClick={() => handleClick(cell_number)}
               >
                 <FigurePathHint cellInPath={cellInPath}>
-                  <Figure checkCell={checkCell} pickedBorder={pickedBorder}>
+                  <Figure
+                    figureColor={figure_color}
+                    checkCell={checkCell}
+                    pickedBorder={pickedBorder}
+                  >
                     {figureSign}
                   </Figure>
                 </FigurePathHint>
