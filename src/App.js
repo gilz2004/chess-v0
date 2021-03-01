@@ -86,7 +86,8 @@ const FigurePathHint = styled.div`
   border: ${(props) => (props.cellInPath ? "2px solid white" : "none")};
   border-radius: 10px;
   width: 85%;
-  height: 85%;
+  min-height: 85%;
+
   display: flex;
   justify-content: center;
   align-items: center;
