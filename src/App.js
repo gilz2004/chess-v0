@@ -149,6 +149,9 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: 0 35px;
+  @media (max-width: 960px) {
+    padding: 0 20px;
+  }
 `;
 
 const NavLinksBox = styled.div`
