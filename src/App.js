@@ -166,7 +166,7 @@ const PlayerTurnSymbol = styled(FaChessQueen)`
 `;
 
 export default function App() {
-  const [hints, setHints] = useState(false);
+  const [hints, setHints] = useState(true);
   const state = useGame();
   const { gameStatus, takenFigures, resetGame } = state;
   //todo: when socket will be used change underline to active link.
@@ -201,8 +201,7 @@ export default function App() {
             Show path hints?{" "}
             <input
               type="checkbox"
-              // checked
-              value={hints}
+              checked={hints}
               onChange={(e) => setHints(e.target.checked)}
             />
           </div>
