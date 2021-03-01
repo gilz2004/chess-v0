@@ -18,7 +18,7 @@ const GameWrapper = styled.div`
   display: grid;
   height: 90vh;
   @media (max-width: 960px) {
-    grid-template-rows: 1fr 90px 250px;
+    grid-template-rows: 1fr 90px 1fr;
     grid-gap: 10px;
   }
   @media (min-width: 960px) {
