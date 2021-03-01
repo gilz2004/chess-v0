@@ -22,10 +22,13 @@ export default function useGame() {
     pickedCell,
     path,
     check,
-    kingThreatCells,
     takenFigures,
     gameStatus,
   } = state;
+
+  function resetGame() {
+    setState(initialState);
+  }
 
   function handleKingMove(opponentPlayer, curr_figure_path, cellNumber) {
     let modCurrFigurePath = { ...curr_figure_path };
@@ -36,15 +39,17 @@ export default function useGame() {
       opponentsCells.forEach((oppCellPath) => {
         let cellFigurePath = buildFigurePath(
           modBoard,
-          oppCellPath,
+          oppCellPath, //35
           opponentPlayer
         );
-
-        let kingInCell = searchOpponentKing(cellFigurePath);
-        if (kingInCell) {
-          let { cell: kingCellNumber } = kingInCell;
-          delete modCurrFigurePath[kingCellNumber];
-        }
+        // console.log("cellFigurePath", cellFigurePath, figurePathCell);
+        if (cellFigurePath[figurePathCell.cell])
+          delete modCurrFigurePath[figurePathCell.cell];
+        // let kingInCell = searchOpponentKing(cellFigurePath);
+        // if (kingInCell) {
+        //   let { cell: kingCellNumber } = kingInCell;
+        //   delete modCurrFigurePath[kingCellNumber];
+        // }
       });
     });
     return modCurrFigurePath;
@@ -65,9 +70,8 @@ export default function useGame() {
   }
 
   function isGameOver() {
-    let kingProtectionFigures = [];
     let currPlayerFigures = getPlayerCells(player);
-    currPlayerFigures.reduce((acc, figureCell) => {
+    let kingProtectionFigures = currPlayerFigures.reduce((acc, figureCell) => {
       let cellFigurePath = buildFigurePath(figuresBoard, figureCell, player);
       if (figuresBoard[figureCell].type === "king") {
         let oppPlayer = player === "white" ? "black" : "white";
@@ -79,8 +83,9 @@ export default function useGame() {
         if (Object.values(kingMovePath).length) acc.push(kingMovePath);
       } else {
         let kingProtectionFigurePath = saveTheKingFigure(cellFigurePath);
-        if (Object.values(kingProtectionFigurePath).length)
+        if (Object.values(kingProtectionFigurePath).length) {
           acc.push(kingProtectionFigurePath);
+        }
       }
       return acc;
     }, []);
@@ -169,6 +174,7 @@ export default function useGame() {
     Object.values(path).find((pathCell) => pathCell.type === "king");
 
   const handleClick = (cellNumber) => {
+    if (gameStatus) return;
     //No cell picked yet
     if (!pickedCell) {
       if (player !== figuresBoard[cellNumber]?.player) return;
@@ -525,15 +531,8 @@ export default function useGame() {
   return {
     ...state,
     handleClick,
+    resetGame,
   };
 }
 ///todo:
-//problems: 1 black  knight can overtake his figures.= fixed
-//2 paint the current picked cell in color, so the user may know who he picked
 //3 check for code repetition
-
-//4 canFigureMove function newPath part to check it well
-//5 how to build a check mate situation
-//6 pawn to queen transform
-//7 paint current picked figure cell
-//8 add taken figures to taken figures array

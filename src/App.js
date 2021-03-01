@@ -4,22 +4,41 @@ import "./app.styles.css";
 import { figureDraw } from "./boardEssentials";
 import useGame from "./useGame";
 
+const AppBox = styled.div`
+  @media (max-width: 500px) {
+    padding: 10px 10px;
+  }
+`;
+
 const Title = styled.h1`
   text-align: center;
-  margin: 20px 0;
 `;
 
 const GameWrapper = styled.div`
   display: grid;
-  grid-template-columns: 200px 1fr 250px;
-  height: 95vh;
-  grid-gap: 20px;
+  height: 90vh;
+  // @media (max-width: 500px) {
+  //   grid-gap: 20px;
+  //   background: red;
+  // }
+  @media (max-width: 960px) {
+    grid-template-rows: 1fr 90px 250px;
+    grid-gap: 10px;
+  }
+  @media (min-width: 960px) {
+    grid-template-columns: 200px 1fr 250px;
+    grid-gap: 20px;
+  }
 `;
 
 const BoardWrapper = styled.div`
   border: 3px solid black;
   height: 100%;
   display: grid;
+
+  @media (max-width: 960px) {
+    grid-row: 1;
+  }
 `;
 
 const BoardRows = styled.div`
@@ -33,16 +52,26 @@ const BoardColumns = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 55px;
-  min-height: 55px;
+  min-height: 50px;
+
   font-weight: 600;
   background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
   color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
+
+  @media (min-width: 500px) {
+    min-width: 55px;
+    min-height: 58px;
+  }
 `;
 
 const Figure = styled.div`
   font-size: ${(props) => (props.checkCell ? "40px" : "35px")};
   font-weight: ${(props) => (props.checkCell ? "900" : "400")};
+  border: ${(props) => (props.pickedBorder ? "1px solid gray" : "none")};
+  outline: none;
+  @media (max-width: 500px) {
+    font-size: ${(props) => (props.checkCell ? "35px" : "25px")};
+  }
 `;
 
 const FigurePathHint = styled.div`
@@ -55,53 +84,105 @@ const FigurePathHint = styled.div`
   align-items: center;
 `;
 
+const GameDetailsBox = styled.div`
+  text-align: center;
+  @media (max-width: 960px) {
+    grid-row: 2;
+  }
+`;
+
+const CurrPlayer = styled.p`
+  font-size: 20px;
+  margin-top: 20px;
+`;
+
+const GameStatus = styled.div`
+  margin-top: 20px;
+`;
+
+const GameOverMsg = styled.p`
+  text-decoration: underline;
+  font-size: 18px;
+  margin-bottom: 10px;
+`;
+
+const NewGameBtn = styled.button`
+  padding: 10px;
+  background: none;
+  margin-top: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+`;
+
+const TakenFiguresBox = styled.div`
+  @media (max-width: 960px) {
+    grid-row: 3;
+  }
+`;
+
+const TakenFigures = styled.ul`
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 50px;
+  grid-gap: 5px;
+`;
+
+const TakenFigure = styled.li`
+  font-size: 32px;
+  text-align: center;
+`;
+
 export default function App() {
   const state = useGame();
-  const { gameStatus, takenFigures } = state;
+  const { gameStatus, takenFigures, resetGame } = state;
 
   return (
-    <>
+    <AppBox>
       <Title>Chess Game</Title>
       <GameWrapper>
-        <div>
-          <h3>Game details here</h3>
-          <p>{state.player} player turn</p>
+        <GameDetailsBox>
+          <h2>Game details</h2>
+          <CurrPlayer>{state.player} player turn</CurrPlayer>
           {gameStatus ? (
-            <div style={{ border: "3px solid red" }}>
-              Game over winner is:{state.player === "white" ? "black" : "white"}
-            </div>
+            <GameStatus>
+              <GameOverMsg>Game Over!!!</GameOverMsg>The{" "}
+              {state.player === "white" ? "black" : "white"} Player wins
+              <NewGameBtn onClick={resetGame}>New Game</NewGameBtn>
+            </GameStatus>
           ) : null}
-        </div>
+        </GameDetailsBox>
         <Board state={state} />
-        <ul>
-          {takenFigures.map((figure, index) => {
-            console.log("fig", figure);
-            return (
-              <li
-                key={index}
-                style={{ color: figure.player === "black" ? "black" : "red" }}
-              >
-                {figureDraw[figure.type]}
-              </li>
-            );
-          })}
-        </ul>
+        <TakenFiguresBox>
+          <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+            Taken figures{" "}
+            {takenFigures.length ? (
+              <span>0</span>
+            ) : (
+              <span>{takenFigures.length} </span>
+            )}
+          </h2>
+          <TakenFigures>
+            {takenFigures.map((figure, index) => {
+              return (
+                <TakenFigure
+                  key={index}
+                  style={{ color: figure.player === "black" ? "black" : "red" }}
+                >
+                  {figureDraw[figure.type]}
+                </TakenFigure>
+              );
+            })}
+          </TakenFigures>
+        </TakenFiguresBox>
       </GameWrapper>
-    </>
+    </AppBox>
   );
 }
 
 function Board({ state }) {
-  const {
-    figuresBoard,
-    handleClick,
-    path,
-    check,
-    // takenFigures,
-    // gameStatus,
-  } = state;
-  // console.log("path in app ", path);
-  // console.log("gameStatus", gameStatus);
+  const { figuresBoard, handleClick, path, check, pickedCell } = state;
+
   const drawBoard = (figuresBoard) => {
     const board = new Array(8).fill(new Array(8).fill());
     return board.map((row, row_index) => {
@@ -115,6 +196,7 @@ function Board({ state }) {
             let figureSign = figureDraw[figure] ? figureDraw[figure] : "";
             let cellInPath = path ? path[cell_number] : "";
             let checkCell = check === cell_number;
+            let pickedBorder = cell_number === pickedCell;
             return (
               <BoardColumns
                 key={col_index}
@@ -123,7 +205,9 @@ function Board({ state }) {
                 onClick={() => handleClick(cell_number)}
               >
                 <FigurePathHint cellInPath={cellInPath}>
-                  <Figure checkCell={checkCell}>{figureSign}</Figure>
+                  <Figure checkCell={checkCell} pickedBorder={pickedBorder}>
+                    {figureSign}
+                  </Figure>
                 </FigurePathHint>
               </BoardColumns>
             );
