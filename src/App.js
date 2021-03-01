@@ -8,7 +8,7 @@ import useGame from "./useGame";
 
 const AppBox = styled.div`
   height: 100vh;
-  background-image: url("/assets/wood-background.png");
+  background-image: url("/assets/wood-background1.png");
   @media (max-width: 500px) {
     padding: 10px 10px;
   }
