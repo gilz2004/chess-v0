@@ -28,7 +28,7 @@ const GameWrapper = styled.div`
 `;
 
 const BoardWrapper = styled.div`
-  border: 5px solid #2b2723;
+  border: 8px solid #2b2723;
   -webkit-box-shadow: 2px 4px 19px 5px #000000;
   box-shadow: 2px 4px 19px 5px #000000;
   border-radius: 8px;
