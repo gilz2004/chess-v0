@@ -160,18 +160,19 @@ const NavLinksBox = styled.div`
 const NavLink = styled.span`
   font-size: 12px;
   cursor: pointer;
+  text-decoration: ${(props) => (props.underline ? "underline" : "none")};
 `;
 
 export default function App() {
   const state = useGame();
   const { gameStatus, takenFigures, resetGame } = state;
-
+  //todo: when socket will be used change underline to active link.
   return (
     <AppBox>
       <Nav>
         <Title>Chess</Title>
         <NavLinksBox>
-          <NavLink>Local mode</NavLink>
+          <NavLink underline={true}>Local mode</NavLink>
           <NavLink>Online soon</NavLink>
         </NavLinksBox>
       </Nav>
