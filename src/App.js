@@ -1,5 +1,5 @@
 import React from "react";
-import { FaChess } from "react-icons/fa";
+import { FaChess, FaChessQueen } from "react-icons/fa";
 import styled from "styled-components";
 import "./app.styles.css";
 import { figureDraw } from "./boardEssentials";
@@ -108,6 +108,9 @@ const GameDetailsBox = styled.div`
 
 const CurrPlayer = styled.p`
   font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
 `;
 
@@ -177,6 +180,14 @@ const NavLink = styled.span`
   text-decoration: ${(props) => (props.underline ? "underline" : "none")};
 `;
 
+const PlayerTurnSymbol = styled(FaChessQueen)`
+  color: ${(props) => props.color};
+  font-size: 30px;
+  margin-bottom: 10px;
+  border-bottom: ${(props) => `2px solid ${props.color}`};
+  padding: 3px;
+`;
+
 export default function App() {
   const state = useGame();
   const { gameStatus, takenFigures, resetGame } = state;
@@ -196,7 +207,12 @@ export default function App() {
       <GameWrapper>
         <GameDetailsBox>
           <h2>Game details</h2>
-          <CurrPlayer>{state.player} player turn</CurrPlayer>
+          <CurrPlayer>
+            <PlayerTurnSymbol
+              color={state.player === "white" ? "white" : "black"}
+            />
+            <span>player turn</span>
+          </CurrPlayer>
           {gameStatus ? (
             <GameStatus>
               <GameOverMsg>Game Over!!!</GameOverMsg>The{" "}
