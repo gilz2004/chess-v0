@@ -60,7 +60,7 @@ const BoardColumns = styled.div`
 
   @media (min-width: 500px) {
     min-width: 55px;
-    min-height: 58px;
+    min-height: 60px;
   }
 `;
 

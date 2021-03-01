@@ -15,7 +15,6 @@ let pathToKing = {};
 
 export default function useGame() {
   const [state, setState] = useState(initialState);
-  // const [kingThreatCells, setKingThreatCells] = useState(null);
   const {
     figuresBoard,
     player,
@@ -116,18 +115,22 @@ export default function useGame() {
 
     let curr_figure_path = buildFigurePath(figuresBoard, cellNumber, player);
     let opponentPlayer = player === "white" ? "black" : "white";
+    let modCurrFigurePath;
     //check the kings path for threats.
     if (
       figuresBoard[cellNumber].player === player &&
       figuresBoard[cellNumber].type === "king"
     ) {
-      let modCurrFigurePath = handleKingMove(
+      modCurrFigurePath = handleKingMove(
         opponentPlayer,
         curr_figure_path,
         cellNumber
       );
 
-      //king cannot move anywhere
+      if (!Object.values(modCurrFigurePath).length && isGameOver()) {
+        setState({ ...state, gameStatus: true });
+        return {};
+      }
       return modCurrFigurePath;
     } else if (check) {
       if (isGameOver()) {
@@ -534,4 +537,3 @@ export default function useGame() {
 //1check for code repetition
 //2 remove not used comments.
 //3 rakirovka
-//4 when king stays alone vs opponent, even if he has no were to go no game over mode turn on
