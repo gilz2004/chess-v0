@@ -13,7 +13,11 @@ p {
   padding: 0;
 }
 
-.container {
+/* .container {
   display: grid;
   grid-template-columns: 200px 1fr 200px;
+
+} */
+body {
+  background: #f4e5c8;
 }

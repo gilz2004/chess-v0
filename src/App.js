@@ -12,15 +12,13 @@ const AppBox = styled.div`
 
 const Title = styled.h1`
   text-align: center;
+  margin: 10px 0;
+  color: #64341b;
 `;
 
 const GameWrapper = styled.div`
   display: grid;
   height: 90vh;
-  // @media (max-width: 500px) {
-  //   grid-gap: 20px;
-  //   background: red;
-  // }
   @media (max-width: 960px) {
     grid-template-rows: 1fr 90px 250px;
     grid-gap: 10px;
@@ -32,10 +30,11 @@ const GameWrapper = styled.div`
 `;
 
 const BoardWrapper = styled.div`
-  border: 3px solid black;
+  border: 20px solid #64341b;
   height: 100%;
   display: grid;
-
+  -webkit-box-shadow: -1px -1px 15px -1px rgba(0, 0, 0, 0.51);
+  box-shadow: -1px -1px 15px -1px rgba(0, 0, 0, 0.51);
   @media (max-width: 960px) {
     grid-row: 1;
   }
@@ -53,8 +52,9 @@ const BoardColumns = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 50px;
-
   font-weight: 600;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
   color: ${(props) => (props.figureColor === "white" ? "white" : "black")};
 
@@ -65,9 +65,9 @@ const BoardColumns = styled.div`
 `;
 
 const Figure = styled.div`
-  font-size: ${(props) => (props.checkCell ? "40px" : "35px")};
+  font-size: ${(props) => (props.checkCell ? "42px" : "38px")};
   font-weight: ${(props) => (props.checkCell ? "900" : "400")};
-  border: ${(props) => (props.pickedBorder ? "1px solid gray" : "none")};
+  border: ${(props) => (props.pickedBorder ? "1px solid white" : "none")};
   outline: none;
   @media (max-width: 500px) {
     font-size: ${(props) => (props.checkCell ? "35px" : "25px")};
@@ -75,7 +75,7 @@ const Figure = styled.div`
 `;
 
 const FigurePathHint = styled.div`
-  border: ${(props) => (props.cellInPath ? "2px solid red" : "none")};
+  border: ${(props) => (props.cellInPath ? "2px solid white" : "none")};
   border-radius: 10px;
   width: 85%;
   height: 85%;
@@ -86,6 +86,7 @@ const FigurePathHint = styled.div`
 
 const GameDetailsBox = styled.div`
   text-align: center;
+  color: #64341b;
   @media (max-width: 960px) {
     grid-row: 2;
   }
@@ -154,7 +155,13 @@ export default function App() {
         </GameDetailsBox>
         <Board state={state} />
         <TakenFiguresBox>
-          <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+          <h2
+            style={{
+              textAlign: "center",
+              marginBottom: "20px",
+              color: "#64341b",
+            }}
+          >
             Taken figures{" "}
           </h2>
           <TakenFigures>
@@ -162,7 +169,9 @@ export default function App() {
               return (
                 <TakenFigure
                   key={index}
-                  style={{ color: figure.player === "black" ? "black" : "red" }}
+                  style={{
+                    color: figure.player === "black" ? "black" : "gray",
+                  }}
                 >
                   {figureDraw[figure.type]}
                 </TakenFigure>

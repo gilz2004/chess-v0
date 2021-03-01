@@ -533,3 +533,5 @@ export default function useGame() {
 ///todo:
 //1check for code repetition
 //2 remove not used comments.
+//3 rakirovka
+//4 when king stays alone vs opponent, even if he has no were to go no game over mode turn on
