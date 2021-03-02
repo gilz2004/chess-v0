@@ -9,8 +9,13 @@ import useGame from "./useGame";
 const AppBox = styled.div`
   height: 100vh;
   background-image: url("/assets/wood-background1.png");
+  // overflow: hidden;
   @media (max-width: 500px) {
     padding: 10px 10px;
+    height: 200vh;
+  }
+  @media (max-width: 960px) {
+    height: 150vh;
   }
 `;
 
