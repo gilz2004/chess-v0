@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { piecesObject } from "./boardEssentials";
+import { piecesObject } from "../boardEssentials";
 
 const initialState = {
   player: "white",
@@ -541,6 +541,6 @@ export default function useGame() {
   };
 }
 ///todo:
-//1check for code repetition
+//1 refactor ?
 //2 remove not used comments.
 //3 rakirovka

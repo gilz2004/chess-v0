@@ -36,14 +36,6 @@ export const piecesObject = {
   77: { type: "rook", player: "white" },
 };
 
-// export const figureDraw = {
-//   rook: "♖",
-//   knight: "♘",
-//   bishop: "♗",
-//   king: "♔",
-//   queen: "♕",
-//   pawn: "♙",
-// };
 export const figureDraw = {
   rook: <GiChessRook />,
   knight: <FaChessKnight />,

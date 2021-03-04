@@ -1,14 +1,18 @@
-import React from "react";
 import styled from "styled-components";
 import { FaChess } from "react-icons/fa";
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid white;
+  width: 150px;
+`;
 
 const Title = styled.div`
   font-size: 40px;
 `;
 
 const Nav = styled.nav`
-  //   border-bottom: 2px solid white;
-  //   background: #64341b;
   height: 50px;
   margin-bottom: 10px;
   color: white;
@@ -50,25 +54,4 @@ const HeaderIcon = styled(FaChess)`
   }
 `;
 
-export default function Header() {
-  return (
-    <Nav>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          borderBottom: "1px solid white",
-          width: "150px",
-        }}
-      >
-        <Title>Chess</Title>
-
-        <HeaderIcon />
-      </div>
-      <NavLinksBox>
-        <NavLink underline={true}>Local mode</NavLink>
-        <NavLink>Online soon</NavLink>
-      </NavLinksBox>
-    </Nav>
-  );
-}
+export { TitleWrapper, Title, Nav, NavLink, NavLinksBox, HeaderIcon };
