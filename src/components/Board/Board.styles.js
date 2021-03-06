@@ -28,7 +28,6 @@ const BoardColumns = styled.div`
   font-weight: 600;
   -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
-  // background: ${(props) => (props.background ? "#D8AD8D" : "#78492F")};
   background-image: ${(props) =>
     props.background
       ? "url(/assets/dark-cell.png)"
@@ -43,11 +42,16 @@ const FigurePathHint = styled.div`
   border: ${(props) =>
     props.cellInPath && props.hints ? "2px solid white" : "none"};
   border-radius: 10px;
-  width: 85%;
-  height: 85%;
+
+  min-height: 40px;
+  min-width: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (min-width: 500px) {
+    width: 85%;
+    height: 85%;
+  }
 `;
 
 export { FigurePathHint, BoardColumns, BoardRows, BoardWrapper };

@@ -16,7 +16,4 @@ export const FigureWrapper = styled.div`
     transform: ${(props) =>
       props.figureColor === "black" ? "rotate(180deg)" : "none"};
   }
-  &:hover {
-    transform: scale(1.2);
-  }
 `;
