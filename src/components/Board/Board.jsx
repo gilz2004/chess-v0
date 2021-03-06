@@ -1,10 +1,9 @@
 import React from "react";
-import { figureDraw } from "../../boardEssentials";
+import Figure from "../Figure/Figure";
 import {
   BoardColumns,
   BoardRows,
   BoardWrapper,
-  Figure,
   FigurePathHint,
 } from "./Board.styles";
 
@@ -16,16 +15,13 @@ export default function Board({ state, hints }) {
     return board.map((row, row_index) => {
       return (
         <BoardRows key={row_index}>
-          {row.map((col, col_index) => {
-            let cell_number = row_index + "" + col_index;
+          {row.map((_, col_index) => {
+            let cell_number = `${row_index}${col_index}`;
             let cell_background = (row_index + col_index) % 2 === 0;
-            let figure_color = figuresBoard[cell_number]?.player;
-            let figure = figuresBoard[cell_number]?.type;
-            let figureSign = figureDraw[figure] ? figureDraw[figure] : "";
+            const { type, player } = figuresBoard[cell_number] || {};
             let cellInPath = path ? path[cell_number] : "";
             let checkCell = check === cell_number;
             let pickedBorder = cell_number === pickedCell;
-            let enableBorderShadow = figureSign ? true : false;
             return (
               <BoardColumns
                 key={col_index}
@@ -34,13 +30,11 @@ export default function Board({ state, hints }) {
               >
                 <FigurePathHint cellInPath={cellInPath} hints={hints}>
                   <Figure
-                    enableBorderShadow={enableBorderShadow}
-                    figureColor={figure_color}
+                    colorByPlayer={player}
+                    symbol={type}
                     checkCell={checkCell}
                     pickedBorder={pickedBorder}
-                  >
-                    {figureSign}
-                  </Figure>
+                  />
                 </FigurePathHint>
               </BoardColumns>
             );

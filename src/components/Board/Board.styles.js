@@ -39,22 +39,6 @@ const BoardColumns = styled.div`
   }
 `;
 
-const Figure = styled.div`
-  user-select: none;
-  border-radius: 10px;
-  color: ${(props) => (props.figureColor === "white" ? "white" : "#1E1E1E")};
-  font-size: ${(props) => (props.checkCell ? "42px" : "38px")};
-  font-weight: ${(props) => (props.checkCell ? "900" : "400")};
-  border: ${(props) => (props.pickedBorder ? "1px solid white" : "none")};
-  outline: none;
-  @media (max-width: 500px) {
-    font-size: ${(props) => (props.checkCell ? "35px" : "25px")};
-  }
-  &:hover {
-    transform: scale(1.2);
-  }
-`;
-
 const FigurePathHint = styled.div`
   border: ${(props) =>
     props.cellInPath && props.hints ? "2px solid white" : "none"};
@@ -66,4 +50,4 @@ const FigurePathHint = styled.div`
   align-items: center;
 `;
 
-export { FigurePathHint, Figure, BoardColumns, BoardRows, BoardWrapper };
+export { FigurePathHint, BoardColumns, BoardRows, BoardWrapper };
