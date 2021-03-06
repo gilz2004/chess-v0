@@ -13,6 +13,8 @@ export const FigureWrapper = styled.div`
   outline: none;
   @media (max-width: 500px) {
     font-size: 25px;
+    transform: ${(props) =>
+      props.figureColor === "black" ? "rotate(180deg)" : "none"};
   }
   &:hover {
     transform: scale(1.2);
