@@ -41,14 +41,8 @@ export default function useGame() {
           oppCellPath, //35
           opponentPlayer
         );
-        // console.log("cellFigurePath", cellFigurePath, figurePathCell);
         if (cellFigurePath[figurePathCell.cell])
           delete modCurrFigurePath[figurePathCell.cell];
-        // let kingInCell = searchOpponentKing(cellFigurePath);
-        // if (kingInCell) {
-        //   let { cell: kingCellNumber } = kingInCell;
-        //   delete modCurrFigurePath[kingCellNumber];
-        // }
       });
     });
     return modCurrFigurePath;
@@ -329,7 +323,6 @@ export default function useGame() {
         let cell = nextRow + "" + nextCol;
         if (!cellOnBoardValid(nextRow, nextCol)) return acc;
         else if (isOpponentFound(cell)) {
-          // if (board[cell].type === "king") kingsPath = { ...kingsPath };
           acc = {
             ...acc,
             [cell]: { ...board[cell], cell },
@@ -411,7 +404,6 @@ export default function useGame() {
     };
 
     const rookPathBuild = () => {
-      //This will run automatically
       let movements = {
         goUp: () =>
           tryBuildPath({

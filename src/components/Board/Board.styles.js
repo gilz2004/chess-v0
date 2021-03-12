@@ -26,7 +26,6 @@ const BoardColumns = styled.div`
   align-items: center;
   min-height: 50px;
   font-weight: 600;
-  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.26);
   background-image: ${(props) =>
     props.background

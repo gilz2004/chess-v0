@@ -4,12 +4,10 @@ import { FaChessQueen } from "react-icons/fa";
 const GameDetailsBox = styled.div`
   position: relative;
   box-shadow: 2px 4px 15px 5px rgba(0, 0, 0, 0.5);
-  // border: 3px solid #64341b;
   border-radius: 10px;
   padding: 15px 0;
   margin-left: 10px;
   text-align: center;
-  // color: #64341b;
   color: white;
   @media (max-width: 960px) {
     grid-row: 2;
@@ -42,6 +40,7 @@ const NewGameBtn = styled.button`
   background: none;
   margin-top: 20px;
   border-radius: 8px;
+  color: white;
   cursor: pointer;
 `;
 const PlayerTurnSymbol = styled(FaChessQueen)`
@@ -52,6 +51,14 @@ const PlayerTurnSymbol = styled(FaChessQueen)`
   padding: 3px;
 `;
 
+const ShowPathHintsBox = styled.div`
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 5px;
+  width: 100%;
+  text-align: center;
+`;
+
 export {
   GameDetailsBox,
   CurrPlayer,
@@ -59,4 +66,5 @@ export {
   GameOverMsg,
   NewGameBtn,
   PlayerTurnSymbol,
+  ShowPathHintsBox,
 };

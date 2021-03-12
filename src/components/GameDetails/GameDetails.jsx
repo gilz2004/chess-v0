@@ -1,4 +1,5 @@
 import React from "react";
+import Timer from "../Timer/Timer";
 import {
   CurrPlayer,
   GameDetailsBox,
@@ -6,6 +7,7 @@ import {
   GameStatus,
   NewGameBtn,
   PlayerTurnSymbol,
+  ShowPathHintsBox,
 } from "./GameDetails.styles";
 
 export default function GameDetails({
@@ -18,6 +20,7 @@ export default function GameDetails({
   return (
     <GameDetailsBox>
       <h2>Game details</h2>
+      <Timer player={player} />
       <CurrPlayer>
         <PlayerTurnSymbol color={player === "white" ? "white" : "black"} />
         <span>player turn</span>
@@ -29,22 +32,14 @@ export default function GameDetails({
           <NewGameBtn onClick={resetGame}>New Game</NewGameBtn>
         </GameStatus>
       ) : null}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "0",
-          marginBottom: "5px",
-          width: "100%",
-          textAlign: "center",
-        }}
-      >
+      <ShowPathHintsBox>
         Show path hints?{" "}
         <input
           type="checkbox"
           checked={hints}
           onChange={(e) => setHints(e.target.checked)}
         />
-      </div>
+      </ShowPathHintsBox>
     </GameDetailsBox>
   );
 }
