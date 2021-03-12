@@ -10,7 +10,7 @@ export default function useTimer(player) {
   const [timerColor, setTimerColor] = useState("white");
   const [runTimer, setRunTimer] = useState(true);
   let currPlayerTimer = timer[player];
-  //   console.log("currPlayerTimer", currPlayerTimer);
+
   const handleTimer = () => {
     if (currPlayerTimer.minute === 0 && currPlayerTimer.second === 30)
       setTimerWarning("red");
@@ -61,7 +61,7 @@ export default function useTimer(player) {
     }, 1000);
     //clear interval
     return () => clearInterval(intervalId);
-  }, [timer, runTimer]);
+  });
 
   return { timer, timerColor, formatSeconds };
 }
