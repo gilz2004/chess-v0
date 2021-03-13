@@ -16,3 +16,7 @@ export const AddTimeIcon = styled.span`
   // right: 53px;
   // color: white;
 `;
+export const RunningTimer = styled.span`
+  min-width: 85px;
+  display: inline-block;
+`;

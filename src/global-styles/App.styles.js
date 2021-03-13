@@ -16,7 +16,7 @@ export const GameWrapper = styled.div`
   display: grid;
   height: 90vh;
   @media (max-width: 960px) {
-    grid-template-rows: 1fr 150px 1fr;
+    grid-template-rows: 1fr 200px 1fr;
     grid-gap: 10px;
   }
   @media (min-width: 960px) {

@@ -11,6 +11,7 @@ const GameDetailsBox = styled.div`
   color: white;
   @media (max-width: 960px) {
     grid-row: 2;
+    // height: max-content;
   }
   @media (min-width: 960px) {
     height: 50vh;
@@ -22,7 +23,9 @@ const CurrPlayer = styled.p`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  @media (min-width: 960px) {
+    margin-top: 20px;
+  }
 `;
 
 const GameStatus = styled.div`
