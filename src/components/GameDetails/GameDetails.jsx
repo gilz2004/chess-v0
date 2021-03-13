@@ -8,6 +8,7 @@ import {
   NewGameBtn,
   PlayerTurnSymbol,
   ShowPathHintsBox,
+  TimersBlock,
 } from "./GameDetails.styles";
 
 export default function GameDetails({
@@ -20,7 +21,10 @@ export default function GameDetails({
   return (
     <GameDetailsBox>
       <h2>Game details</h2>
-      <Timer currentPlayer={player} timerOwner="black" />
+      <TimersBlock>
+        <Timer currentPlayer={player} timerOwner="black" />
+        <Timer currentPlayer={player} timerOwner="white" />
+      </TimersBlock>
       <CurrPlayer>
         <PlayerTurnSymbol color={player === "white" ? "white" : "black"} />
         <span>player turn</span>
@@ -32,7 +36,6 @@ export default function GameDetails({
           <NewGameBtn onClick={resetGame}>New Game</NewGameBtn>
         </GameStatus>
       ) : null}
-      <Timer currentPlayer={player} timerOwner="white" />
       <ShowPathHintsBox>
         Show path hints?{" "}
         <input

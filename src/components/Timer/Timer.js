@@ -7,10 +7,10 @@ export default function Timer({ currentPlayer, timerOwner }) {
     currentPlayer,
     timerOwner
   );
-
+  let isPlayerOwner = currentPlayer === timerOwner;
   return (
     <>
-      <TimerBox timerColor={timerColor}>
+      <TimerBox isPlayerOwner={isPlayerOwner} timerColor={timerColor}>
         <span>{timerFormatted}</span>
         {timerOwner !== currentPlayer ? (
           <AddTimeIcon onClick={handleTimeAddition}>+</AddTimeIcon>

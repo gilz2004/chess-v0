@@ -13,7 +13,7 @@ const GameDetailsBox = styled.div`
     grid-row: 2;
   }
   @media (min-width: 960px) {
-    height: 40vh;
+    height: 50vh;
   }
 `;
 
@@ -59,6 +59,20 @@ const ShowPathHintsBox = styled.div`
   text-align: center;
 `;
 
+const TimersBlock = styled.div`
+  height: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 2px 4px 15px 5px rgba(0, 0, 0, 0.5);
+  @media (max-width: 960px) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 50px;
+  }
+`;
+
 export {
   GameDetailsBox,
   CurrPlayer,
@@ -67,4 +81,5 @@ export {
   NewGameBtn,
   PlayerTurnSymbol,
   ShowPathHintsBox,
+  TimersBlock,
 };

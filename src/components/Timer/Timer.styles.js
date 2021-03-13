@@ -6,6 +6,7 @@ export const TimerBox = styled.div`
   font-family: fantasy;
   letter-spacing: 3.3px;
   color: ${(props) => props.timerColor};
+  opacity: ${(props) => (props.isPlayerOwner ? "1" : "0.5")};
 `;
 
 export const AddTimeIcon = styled.span`
