@@ -20,7 +20,7 @@ export default function GameDetails({
   return (
     <GameDetailsBox>
       <h2>Game details</h2>
-      <Timer player={player} />
+      <Timer currentPlayer={player} timerOwner="black" />
       <CurrPlayer>
         <PlayerTurnSymbol color={player === "white" ? "white" : "black"} />
         <span>player turn</span>
@@ -32,6 +32,7 @@ export default function GameDetails({
           <NewGameBtn onClick={resetGame}>New Game</NewGameBtn>
         </GameStatus>
       ) : null}
+      <Timer currentPlayer={player} timerOwner="white" />
       <ShowPathHintsBox>
         Show path hints?{" "}
         <input

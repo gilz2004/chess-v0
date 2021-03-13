@@ -1,15 +1,21 @@
 import React from "react";
 import useTimer from "../../hooks/useTimer";
-import { TimerBox } from "./Timer.styles";
+import { AddTimeIcon, TimerBox } from "./Timer.styles";
 
-export default function Timer({ player }) {
-  const { timer, timerColor, formatSeconds } = useTimer(player);
+export default function Timer({ currentPlayer, timerOwner }) {
+  const { timerFormatted, timerColor, handleTimeAddition } = useTimer(
+    currentPlayer,
+    timerOwner
+  );
 
-  let { minute, second } = timer[player];
   return (
-    <TimerBox timerColor={timerColor}>
-      <span>{minute}</span>
-      <span>:{formatSeconds(second)}</span>
-    </TimerBox>
+    <>
+      <TimerBox timerColor={timerColor}>
+        <span>{timerFormatted}</span>
+        {timerOwner !== currentPlayer ? (
+          <AddTimeIcon onClick={handleTimeAddition}>+</AddTimeIcon>
+        ) : null}
+      </TimerBox>
+    </>
   );
 }

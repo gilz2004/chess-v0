@@ -1,48 +1,38 @@
 import { useEffect, useState } from "react";
 
-const initialTimer = {
-  white: { minute: 4, second: 59 },
-  black: { minute: 4, second: 59 },
-};
+const initialTimer = { minute: 4, second: 60 };
+let timerWarningNumber = 30;
 
-export default function useTimer(player) {
+export default function useTimer(player, timerOwner) {
   const [timer, setTimer] = useState(initialTimer);
-  const [timerColor, setTimerColor] = useState("white");
+  const [timerColor, setTimerColor] = useState(timerOwner);
   const [runTimer, setRunTimer] = useState(true);
-  let currPlayerTimer = timer[player];
+
+  const { minute, second } = timer;
 
   const handleTimer = () => {
-    if (currPlayerTimer.minute === 0 && currPlayerTimer.second === 30)
-      setTimerWarning("red");
-    if (currPlayerTimer.minute === 0 && currPlayerTimer.second === 0)
-      return handleTimerReset();
-    else if (currPlayerTimer.second === 0)
-      setTimer((prevTimer) => {
-        return {
-          ...prevTimer,
-          [player]: {
-            minute: currPlayerTimer.minute - 1,
-            second: 59,
-          },
-        };
-      });
-    else {
-      setTimer((prevTimer) => {
-        return {
-          ...prevTimer,
-          [player]: {
-            ...currPlayerTimer,
-            second: currPlayerTimer.second - 1,
-          },
-        };
-      });
-    }
+    //not first move, then for each move add 15 seconds auto
+    // console.log(minute !== initialTimer.minute, second !== initialTimer.second);
+    // if (minute !== initialTimer.minute && second !== initialTimer.second) {
+    //   console.log("not first move");
+    //   handleTimeAddition();
+    // }
+    if (minute === 0 && second === timerWarningNumber) setTimerWarning("red");
+    if (minute === 0 && second === 0) return handleTimerReset();
+    else if (second === 0) setTimer({ minute: minute - 1, second: 59 });
+    else setTimer({ ...timer, second: second - 1 });
+    // return handleTimeAddition();
   };
 
   const setTimerWarning = (color) => setTimerColor(color);
 
-  const formatSeconds = (second) =>
-    second === 0 || second < 10 ? `0${second}` : `${second}`;
+  const formatTime = ({ minute, second }) => {
+    //initial condition:
+    if (second === 60) return `${minute < 10 ? "0" : ""}${minute + 1} : 00`;
+    else if (second === 0 || second < 10)
+      return `${minute < 10 ? "0" : ""}${minute} : 0${second}`;
+    return `${minute < 10 ? "0" : ""}${minute} : ${second}`;
+  };
 
   const handleTimerReset = () => {
     setTimer((prevTimer) => prevTimer);
@@ -50,11 +40,27 @@ export default function useTimer(player) {
     setRunTimer(false);
   };
 
-  //for each move, add to the curr player timer 10 seconds
-  //move this to a custom hook, each player will have his own timer
-  //add an option to player to timer (sort off plus button) witch adds 15 seconds each click
+  const handleTimeAddition = () => {
+    const secondsToAdd = 15;
+    const minutesInHour = 60;
+
+    setTimer((prevTimer) => {
+      let secondsAfterAddition = second + secondsToAdd;
+      if (secondsAfterAddition >= minutesInHour)
+        return {
+          minute: minute + 1,
+          second: secondsAfterAddition - minutesInHour,
+        };
+      else if (secondsAfterAddition < minutesInHour)
+        return {
+          minute: minute,
+          second: secondsAfterAddition,
+        };
+    });
+  };
 
   useEffect(() => {
+    if (timerOwner !== player) return;
     if (!runTimer) return;
     const intervalId = setInterval(() => {
       handleTimer();
@@ -63,5 +69,5 @@ export default function useTimer(player) {
     return () => clearInterval(intervalId);
   });
 
-  return { timer, timerColor, formatSeconds };
+  return { timerFormatted: formatTime(timer), timerColor, handleTimeAddition };
 }

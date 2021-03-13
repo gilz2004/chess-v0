@@ -2,7 +2,16 @@ import styled from "styled-components";
 
 export const TimerBox = styled.div`
   margin-top: 5px;
-  font-size: 1.5em;
+  font-size: 1.4em;
+  font-family: fantasy;
   letter-spacing: 3.3px;
   color: ${(props) => props.timerColor};
+`;
+
+export const AddTimeIcon = styled.span`
+  // position: absolute;
+  // top: 55px;
+  // cursor: pointer;
+  // right: 53px;
+  // color: white;
 `;
