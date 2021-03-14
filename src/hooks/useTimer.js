@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const initialTimer = { minute: 4, second: 60 };
-let timerWarningNumber = 30;
+const timerWarningNumber = 30;
 
 export default function useTimer(player, timerOwner) {
   const [timer, setTimer] = useState(initialTimer);
@@ -11,17 +11,13 @@ export default function useTimer(player, timerOwner) {
   const { minute, second } = timer;
 
   const handleTimer = () => {
-    //not first move, then for each move add 15 seconds auto
-    // console.log(minute !== initialTimer.minute, second !== initialTimer.second);
-    // if (minute !== initialTimer.minute && second !== initialTimer.second) {
-    //   console.log("not first move");
-    //   handleTimeAddition();
-    // }
-    if (minute === 0 && second === timerWarningNumber) setTimerWarning("red");
+    if (minute === 0 && second === timerWarningNumber)
+      return setTimerWarning("red");
     if (minute === 0 && second === 0) return handleTimerReset();
-    else if (second === 0) setTimer({ minute: minute - 1, second: 59 });
-    else setTimer({ ...timer, second: second - 1 });
-    // return handleTimeAddition();
+    else if (second === 0) return setTimer({ minute: minute - 1, second: 59 });
+    else {
+      return setTimer({ ...timer, second: second - 1 });
+    }
   };
 
   const setTimerWarning = (color) => setTimerColor(color);
@@ -40,23 +36,25 @@ export default function useTimer(player, timerOwner) {
     setRunTimer(false);
   };
 
-  const handleTimeAddition = () => {
-    const secondsToAdd = 15;
+  const handleTimeAddition = (secondsToAdd = 15) => {
+    if (isFirstMove()) return;
     const minutesInHour = 60;
+    let secondsAfterAddition = second + secondsToAdd;
 
-    setTimer((prevTimer) => {
-      let secondsAfterAddition = second + secondsToAdd;
-      if (secondsAfterAddition >= minutesInHour)
-        return {
-          minute: minute + 1,
-          second: secondsAfterAddition - minutesInHour,
-        };
-      else if (secondsAfterAddition < minutesInHour)
-        return {
-          minute: minute,
-          second: secondsAfterAddition,
-        };
-    });
+    if (secondsAfterAddition >= minutesInHour)
+      setTimer({
+        minute: minute + 1,
+        second: secondsAfterAddition - minutesInHour,
+      });
+    else if (secondsAfterAddition < minutesInHour)
+      setTimer({ ...timer, second: secondsAfterAddition });
+  };
+
+  const isFirstMove = () => {
+    const { minute, second } = timer;
+    if (minute === initialTimer.minute && second === initialTimer.second)
+      return true;
+    return false;
   };
 
   useEffect(() => {
@@ -66,8 +64,15 @@ export default function useTimer(player, timerOwner) {
       handleTimer();
     }, 1000);
     //clear interval
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+    };
   });
 
-  return { timerFormatted: formatTime(timer), timerColor, handleTimeAddition };
+  return {
+    timer,
+    timerFormatted: formatTime(timer),
+    timerColor,
+    handleTimeAddition,
+  };
 }

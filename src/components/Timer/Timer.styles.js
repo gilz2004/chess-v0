@@ -12,7 +12,7 @@ export const TimerBox = styled.div`
 export const AddTimeIcon = styled.span`
   // position: absolute;
   // top: 55px;
-  // cursor: pointer;
+  cursor: pointer;
   // right: 53px;
   // color: white;
 `;
