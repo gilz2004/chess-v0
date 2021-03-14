@@ -25,7 +25,7 @@ export default function useGame() {
     gameStatus,
   } = state;
 
-  function resetGame() {
+  function resetBoard() {
     setState(initialState);
   }
 
@@ -104,6 +104,11 @@ export default function useGame() {
     );
   }
 
+  function setGameStatusOver() {
+    setState({ ...state, gameStatus: true });
+    return {};
+  }
+
   function canFigureMove(figuresBoard, cellNumber, player) {
     //This function will return the path, remove the path build from handleClick when a !pickedCell
 
@@ -126,14 +131,16 @@ export default function useGame() {
         isGameOver() &&
         Object.values(pathToKing).length
       ) {
-        setState({ ...state, gameStatus: true });
-        return {};
+        // setState({ ...state, gameStatus: true });
+        return setGameStatusOver();
+        // return {};
       }
       return modCurrFigurePath;
     } else if (check) {
       if (isGameOver()) {
-        setState({ ...state, gameStatus: true });
-        return {};
+        return setGameStatusOver();
+        // setState({ ...state, gameStatus: true });
+        // return {};
       }
       return saveTheKingFigure(curr_figure_path);
       //the player will find a figure that will protect the king
@@ -529,7 +536,8 @@ export default function useGame() {
   return {
     ...state,
     handleClick,
-    resetGame,
+    resetBoard,
+    setGameStatusOver,
   };
 }
 ///todo:

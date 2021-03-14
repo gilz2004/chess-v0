@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { MyContext } from "../../context/Context";
 import Timer from "../Timer/Timer";
 import {
   CurrPlayer,
@@ -11,19 +12,38 @@ import {
   TimersBlock,
 } from "./GameDetails.styles";
 
-export default function GameDetails({
-  player,
-  gameStatus,
-  resetGame,
-  hints,
-  setHints,
-}) {
+export default function GameDetails({ hints, setHints }) {
+  const { state } = useContext(MyContext);
+  const { player, gameStatus, resetBoard, setGameStatusOver } = state;
+  const [gameReset, setGameReset] = useState(false);
+
+  const handleGameReset = () => {
+    setGameReset(true);
+    resetBoard();
+  };
+
+  const resetGameReset = () => setGameReset(false);
+
   return (
     <GameDetailsBox>
       <h2>Game details</h2>
       <TimersBlock>
-        <Timer currentPlayer={player} timerOwner="black" />
-        <Timer currentPlayer={player} timerOwner="white" />
+        <Timer
+          currentPlayer={player}
+          timerOwner="black"
+          setGameStatusOver={setGameStatusOver}
+          gameReset={gameReset}
+          setGameReset={setGameReset}
+          resetGameReset={resetGameReset}
+        />
+        <Timer
+          currentPlayer={player}
+          timerOwner="white"
+          setGameStatusOver={setGameStatusOver}
+          gameReset={gameReset}
+          setGameReset={setGameReset}
+          resetGameReset={resetGameReset}
+        />
       </TimersBlock>
       <CurrPlayer>
         <PlayerTurnSymbol color={player === "white" ? "white" : "black"} />
@@ -33,7 +53,7 @@ export default function GameDetails({
         <GameStatus>
           <GameOverMsg>Game Over!!!</GameOverMsg>The{" "}
           {player === "white" ? "black" : "white"} Player wins
-          <NewGameBtn onClick={resetGame}>New Game</NewGameBtn>
+          <NewGameBtn onClick={handleGameReset}>New Game</NewGameBtn>
         </GameStatus>
       ) : null}
       <ShowPathHintsBox>

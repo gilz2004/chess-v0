@@ -6,22 +6,37 @@ export default function Timer({
   currentPlayer,
   timerOwner,
   initialTimerMinutes = 5,
+  setGameStatusOver,
+  gameReset,
+  resetGameReset,
 }) {
-  const { runTimer, timerFormatted, timerColor, handleTimeAddition } = useTimer(
+  const {
+    resetTimer,
+    timerFormatted,
+    timerColor,
+    handleTimeAddition,
+  } = useTimer(
     currentPlayer,
     timerOwner,
-    initialTimerMinutes
+    initialTimerMinutes,
+    setGameStatusOver
   );
   let isPlayerOwner = currentPlayer === timerOwner;
-  //todo : use run game to update the state that time is up, and game over
-  //build a global context
+
   useEffect(() => {
-    return () => {
-      if (isPlayerOwner) {
-        handleTimeAddition(10);
-      }
-    };
-  }, [isPlayerOwner]);
+    if (gameReset) {
+      resetTimer();
+      resetGameReset();
+    }
+    console.log("os");
+    console.log(isPlayerOwner);
+    // if (!isPlayerOwner) return () => handleTimeAddition(10);
+    // return () => {
+    //   if (isPlayerOwner) {
+    //     handleTimeAddition(10);
+    //   }
+    // };
+  }, [isPlayerOwner, gameReset]);
 
   return (
     <>

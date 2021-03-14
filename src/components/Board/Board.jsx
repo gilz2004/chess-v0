@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { MyContext } from "../../context/Context";
 import Figure from "../Figure/Figure";
 import {
   BoardColumns,
@@ -7,7 +8,8 @@ import {
   FigurePathHint,
 } from "./Board.styles";
 
-export default function Board({ state, hints }) {
+export default function Board({ hints }) {
+  const { state } = useContext(MyContext);
   const { figuresBoard, handleClick, path, check, pickedCell } = state;
 
   const drawBoard = (figuresBoard) => {

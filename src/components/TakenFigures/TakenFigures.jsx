@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { figureDraw } from "../../boardEssentials";
+import { MyContext } from "../../context/Context";
 import {
   TakenFiguresWrapper,
   TakenFigure,
   TakenFiguresBox,
 } from "./TakenFigures.styles";
 
-export default function TakenFigures({ takenFigures }) {
+export default function TakenFigures() {
+  const { state } = useContext(MyContext);
+  const { takenFigures } = state;
   return (
     <TakenFiguresWrapper>
       <h2

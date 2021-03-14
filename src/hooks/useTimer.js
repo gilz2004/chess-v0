@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 
 const timerWarningNumber = 30;
 
-export default function useTimer(player, timerOwner, initialTimerMinutes) {
+export default function useTimer(
+  player,
+  timerOwner,
+  initialTimerMinutes,
+  setGameStatusOver
+) {
   const initialTimer = { minute: initialTimerMinutes - 1, second: 60 };
   const [timer, setTimer] = useState(initialTimer);
   const [timerColor, setTimerColor] = useState(timerOwner);
@@ -11,9 +16,8 @@ export default function useTimer(player, timerOwner, initialTimerMinutes) {
   const { minute, second } = timer;
 
   const handleTimer = () => {
-    if (minute === 0 && second === timerWarningNumber)
-      return setTimerWarning("red");
-    if (minute === 0 && second === 0) return handleTimerReset();
+    if (minute === 0 && second === timerWarningNumber) setTimerWarning("red");
+    if (minute === 0 && second === 0) return handleTimerFinished();
     else if (second === 0) return setTimer({ minute: minute - 1, second: 59 });
     else {
       return setTimer({ ...timer, second: second - 1 });
@@ -30,10 +34,10 @@ export default function useTimer(player, timerOwner, initialTimerMinutes) {
     return `${minute < 10 ? "0" : ""}${minute} : ${second}`;
   };
 
-  const handleTimerReset = () => {
-    setTimer((prevTimer) => prevTimer);
-    setTimerColor("white");
+  const handleTimerFinished = () => {
     setRunTimer(false);
+    setGameStatusOver();
+    return;
   };
 
   const handleTimeAddition = (secondsToAdd = 15) => {
@@ -57,12 +61,21 @@ export default function useTimer(player, timerOwner, initialTimerMinutes) {
     return false;
   };
 
+  const resetTimer = () => {
+    setTimer(initialTimer);
+    setTimerColor(timerOwner);
+    setRunTimer(true);
+  };
+
   useEffect(() => {
+    let intervalId;
     if (timerOwner !== player) return;
-    if (!runTimer) return;
-    const intervalId = setInterval(() => {
+    //timer has finished remove the interval
+    if (!runTimer) return () => clearInterval(intervalId);
+
+    intervalId = setInterval(() => {
       handleTimer();
-    }, 1000);
+    }, 10);
     //clear interval
     return () => {
       clearInterval(intervalId);
@@ -70,9 +83,9 @@ export default function useTimer(player, timerOwner, initialTimerMinutes) {
   });
 
   return {
-    runTimer,
     timerFormatted: formatTime(timer),
     timerColor,
     handleTimeAddition,
+    resetTimer,
   };
 }
