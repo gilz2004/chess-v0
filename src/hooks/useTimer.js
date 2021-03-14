@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-const initialTimer = { minute: 4, second: 60 };
 const timerWarningNumber = 30;
 
-export default function useTimer(player, timerOwner) {
+export default function useTimer(player, timerOwner, initialTimerMinutes) {
+  const initialTimer = { minute: initialTimerMinutes - 1, second: 60 };
   const [timer, setTimer] = useState(initialTimer);
   const [timerColor, setTimerColor] = useState(timerOwner);
   const [runTimer, setRunTimer] = useState(true);
@@ -70,7 +70,7 @@ export default function useTimer(player, timerOwner) {
   });
 
   return {
-    timer,
+    runTimer,
     timerFormatted: formatTime(timer),
     timerColor,
     handleTimeAddition,
