@@ -22,7 +22,7 @@ export default function GameDetails({ hints, setHints }) {
     resetBoard();
   };
 
-  const resetGameReset = () => setGameReset(false);
+  const setToDefaultGameReset = () => setGameReset(false);
 
   return (
     <GameDetailsBox>
@@ -34,7 +34,7 @@ export default function GameDetails({ hints, setHints }) {
           setGameStatusOver={setGameStatusOver}
           gameReset={gameReset}
           setGameReset={setGameReset}
-          resetGameReset={resetGameReset}
+          setToDefaultGameReset={setToDefaultGameReset}
         />
         <Timer
           currentPlayer={player}
@@ -42,7 +42,7 @@ export default function GameDetails({ hints, setHints }) {
           setGameStatusOver={setGameStatusOver}
           gameReset={gameReset}
           setGameReset={setGameReset}
-          resetGameReset={resetGameReset}
+          setToDefaultGameReset={setToDefaultGameReset}
         />
       </TimersBlock>
       <CurrPlayer>

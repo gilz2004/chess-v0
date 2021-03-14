@@ -72,10 +72,9 @@ export default function useTimer(
     if (timerOwner !== player) return;
     //timer has finished remove the interval
     if (!runTimer) return () => clearInterval(intervalId);
-
     intervalId = setInterval(() => {
       handleTimer();
-    }, 10);
+    }, 1000);
     //clear interval
     return () => {
       clearInterval(intervalId);

@@ -8,7 +8,7 @@ export default function Timer({
   initialTimerMinutes = 5,
   setGameStatusOver,
   gameReset,
-  resetGameReset,
+  setToDefaultGameReset,
 }) {
   const {
     resetTimer,
@@ -26,25 +26,19 @@ export default function Timer({
   useEffect(() => {
     if (gameReset) {
       resetTimer();
-      resetGameReset();
+      setToDefaultGameReset();
     }
-    console.log("os");
-    console.log(isPlayerOwner);
-    // if (!isPlayerOwner) return () => handleTimeAddition(10);
-    // return () => {
-    //   if (isPlayerOwner) {
-    //     handleTimeAddition(10);
-    //   }
-    // };
+    if (!gameReset)
+      return () => {
+        handleTimeAddition(10);
+      };
   }, [isPlayerOwner, gameReset]);
 
   return (
     <>
       <TimerBox isPlayerOwner={isPlayerOwner} timerColor={timerColor}>
         <RunningTimer>{timerFormatted}</RunningTimer>
-        {!isPlayerOwner ? (
-          <AddTimeIcon onClick={() => handleTimeAddition()}>+</AddTimeIcon>
-        ) : null}
+        <AddTimeIcon onClick={() => handleTimeAddition()}>+</AddTimeIcon>
       </TimerBox>
     </>
   );
