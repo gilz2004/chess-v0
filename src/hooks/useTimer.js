@@ -74,7 +74,7 @@ export default function useTimer(
     if (!runTimer) return () => clearInterval(intervalId);
     intervalId = setInterval(() => {
       handleTimer();
-    }, 1000);
+    }, 100);
     //clear interval
     return () => {
       clearInterval(intervalId);
@@ -85,6 +85,5 @@ export default function useTimer(
     timerFormatted: formatTime(timer),
     timerColor,
     handleTimeAddition,
-    resetTimer,
   };
 }

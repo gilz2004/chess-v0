@@ -6,6 +6,7 @@ import GameDetails from "./components/GameDetails/GameDetails.jsx";
 
 import Header from "./components/Header/Header.jsx";
 import { AppBox, GameWrapper } from "./global-styles/App.styles";
+import Modal from "./components/Modal/Modal";
 
 export default function App() {
   const [hints, setHints] = useState(true);
@@ -13,6 +14,7 @@ export default function App() {
   return (
     <AppBox>
       <Header />
+      <Modal />
       <GameWrapper>
         <GameDetails hints={hints} setHints={setHints} />
         <Board hints={hints} />

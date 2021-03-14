@@ -11,7 +11,7 @@ const GameDetailsBox = styled.div`
   color: white;
   @media (max-width: 960px) {
     grid-row: 2;
-    // height: max-content;
+    border: 1px solid #ff6b6b;
   }
   @media (min-width: 960px) {
     height: 50vh;
@@ -34,7 +34,6 @@ const GameStatus = styled.div`
 
 const GameOverMsg = styled.p`
   text-decoration: underline;
-  font-size: 18px;
   margin-bottom: 10px;
 `;
 
@@ -45,6 +44,9 @@ const NewGameBtn = styled.button`
   border-radius: 8px;
   color: white;
   cursor: pointer;
+  font-size: 1.2rem;
+  border: ${(props) =>
+    props.gameDetailsBorder ? "1px solid #ff6b6b" : "black"};
 `;
 const PlayerTurnSymbol = styled(FaChessQueen)`
   color: ${(props) => props.color};

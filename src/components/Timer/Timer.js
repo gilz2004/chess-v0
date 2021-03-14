@@ -7,15 +7,8 @@ export default function Timer({
   timerOwner,
   initialTimerMinutes = 5,
   setGameStatusOver,
-  gameReset,
-  setToDefaultGameReset,
 }) {
-  const {
-    resetTimer,
-    timerFormatted,
-    timerColor,
-    handleTimeAddition,
-  } = useTimer(
+  const { timerFormatted, timerColor, handleTimeAddition } = useTimer(
     currentPlayer,
     timerOwner,
     initialTimerMinutes,
@@ -24,15 +17,10 @@ export default function Timer({
   let isPlayerOwner = currentPlayer === timerOwner;
 
   useEffect(() => {
-    if (gameReset) {
-      resetTimer();
-      setToDefaultGameReset();
-    }
-    if (!gameReset)
-      return () => {
-        handleTimeAddition(10);
-      };
-  }, [isPlayerOwner, gameReset]);
+    return () => {
+      handleTimeAddition(10);
+    };
+  }, [isPlayerOwner]);
 
   return (
     <>

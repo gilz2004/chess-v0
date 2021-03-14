@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { MyContext } from "../../context/Context";
+import { resetGame } from "../../utils";
 import Timer from "../Timer/Timer";
 import {
   CurrPlayer,
   GameDetailsBox,
-  GameOverMsg,
-  GameStatus,
   NewGameBtn,
   PlayerTurnSymbol,
   ShowPathHintsBox,
@@ -14,15 +13,7 @@ import {
 
 export default function GameDetails({ hints, setHints }) {
   const { state } = useContext(MyContext);
-  const { player, gameStatus, resetBoard, setGameStatusOver } = state;
-  const [gameReset, setGameReset] = useState(false);
-
-  const handleGameReset = () => {
-    setGameReset(true);
-    resetBoard();
-  };
-
-  const setToDefaultGameReset = () => setGameReset(false);
+  const { player, setGameStatusOver } = state;
 
   return (
     <GameDetailsBox>
@@ -32,31 +23,22 @@ export default function GameDetails({ hints, setHints }) {
           currentPlayer={player}
           timerOwner="black"
           setGameStatusOver={setGameStatusOver}
-          gameReset={gameReset}
-          setGameReset={setGameReset}
-          setToDefaultGameReset={setToDefaultGameReset}
         />
         <Timer
           currentPlayer={player}
           timerOwner="white"
           setGameStatusOver={setGameStatusOver}
-          gameReset={gameReset}
-          setGameReset={setGameReset}
-          setToDefaultGameReset={setToDefaultGameReset}
         />
       </TimersBlock>
       <CurrPlayer>
         <PlayerTurnSymbol color={player === "white" ? "white" : "black"} />
         <span>player turn</span>
       </CurrPlayer>
-      {gameStatus ? (
-        <GameStatus>
-          <GameOverMsg>Game Over!!!</GameOverMsg>The{" "}
-          {player === "white" ? "black" : "white"} Player wins
-          <NewGameBtn onClick={handleGameReset}>New Game</NewGameBtn>
-        </GameStatus>
-      ) : null}
+      <NewGameBtn gameDetailsBorder onClick={resetGame}>
+        New Game
+      </NewGameBtn>
       <ShowPathHintsBox>
+        {/* //add new game btn here */}
         Show path hints?{" "}
         <input
           type="checkbox"
