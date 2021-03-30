@@ -61,12 +61,6 @@ export default function useTimer(
     return false;
   };
 
-  const resetTimer = () => {
-    setTimer(initialTimer);
-    setTimerColor(timerOwner);
-    setRunTimer(true);
-  };
-
   useEffect(() => {
     let intervalId;
     if (timerOwner !== player) return;
@@ -74,7 +68,7 @@ export default function useTimer(
     if (!runTimer) return () => clearInterval(intervalId);
     intervalId = setInterval(() => {
       handleTimer();
-    }, 100);
+    }, 1000);
     //clear interval
     return () => {
       clearInterval(intervalId);

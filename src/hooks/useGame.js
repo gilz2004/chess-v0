@@ -493,7 +493,6 @@ export default function useGame() {
       let path = {};
       let index = 1;
       let maxLoops = 8;
-      // let opponentKingStatus = {};
       while (maxLoops >= 0) {
         let { nextRow, nextCol } = operation(index);
         let cell = nextRow + "" + nextCol;
@@ -511,7 +510,6 @@ export default function useGame() {
           ) {
             //path to opponents king
             pathToKing = path;
-            // setPathToKing(path);
           }
 
           break;
