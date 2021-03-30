@@ -47,3 +47,4 @@ export default function Board({ hints }) {
   };
   return <BoardWrapper>{drawBoard(figuresBoard)}</BoardWrapper>;
 }
+//Todo: draw board component
