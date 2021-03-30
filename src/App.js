@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./app.styles.css";
-import Board from "./components/Board/Board.jsx";
-import TakenFigures from "./components/TakenFigures/TakenFigures.jsx";
-import GameDetails from "./components/GameDetails/GameDetails.jsx";
+import Board from "./components/board/Board.jsx";
+import TakenFigures from "./components/takenFigures/TakenFigures.jsx";
+import GameDetails from "./components/gameDetails/GameDetails.jsx";
 
-import Header from "./components/Header/Header.jsx";
+import Header from "./components/header/Header.jsx";
 import { AppBox, GameWrapper } from "./global-styles/App.styles";
-import Modal from "./components/Modal/Modal";
+import Modal from "./components/modal/Modal";
 
 export default function App() {
   const [hints, setHints] = useState(true);

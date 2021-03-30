@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { MyContext } from "../../context/Context";
-import Figure from "../Figure/Figure";
+import Figure from "../figure/Figure";
 import {
   BoardColumns,
   BoardRows,

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { MyContext } from "../../context/Context";
 import { resetGame } from "../../utils";
-import Timer from "../Timer/Timer";
+import Timer from "../timer/Timer";
 import {
   CurrPlayer,
   GameDetailsBox,

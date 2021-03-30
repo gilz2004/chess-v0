@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { MyContext } from "../../context/Context";
 import { resetGame } from "../../utils";
-import { GameOverMsg, NewGameBtn } from "../GameDetails/GameDetails.styles";
+import { GameOverMsg, NewGameBtn } from "../gameDetails/GameDetails.styles";
 import { ModalInfo, ModalWrapper } from "./Modal.styles";
 
 export default function Modal() {
