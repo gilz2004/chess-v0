@@ -38,9 +38,9 @@ const GameOverMsg = styled.p`
 `;
 
 const NewGameBtn = styled.button`
-  padding: 10px;
+  padding: 8px;
   background: none;
-  margin-top: 20px;
+  margin-top: 8px;
   border-radius: 8px;
   color: white;
   cursor: pointer;
